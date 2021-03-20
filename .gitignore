@@ -1,3 +1,10 @@
+# jupyter
+figures
+.ipynb_checkpoints
+lsn.sublime-workspace
+lsn.sublime-project
+*.py
+
 # Prerequisites
 *.d
 
