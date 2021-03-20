@@ -1,8 +1,8 @@
 # jupyter
 figures
 .ipynb_checkpoints
-lsn.sublime-workspace
-lsn.sublime-project
+*.sublime-workspace
+*.sublime-project
 *.py
 
 # Prerequisites
