@@ -5,4 +5,7 @@ LSN exercise delivery.
 
 Run `make` in `./rng/` to generate `main.exe`. 
 
-Running the executable will create 4 random number files in `./data`.
+Running the executable will create 4 random number files in `./rng`.
+
+The jupyter notebook needs to be run sequentially.
+
