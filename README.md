@@ -12,5 +12,5 @@ The jupyter notebook needs to be run sequentially.
 #### Issues
 
 - [x] Pi without pi?
-- [x] Is my Cauchy fit really a fit?
+- [ ] Is my Cauchy fit really a fit?
 
