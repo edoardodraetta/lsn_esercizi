@@ -51,7 +51,7 @@ int main (int argc, char *argv[]){
    // Uniform:
 
    // pass to a function?
-   string rng_file = "../data/random.out";
+   string rng_file = "./random.out";
    ofstream outFile;
    outFile.open(rng_file);
 
@@ -67,7 +67,7 @@ int main (int argc, char *argv[]){
 
    // Lorenzian:
 
-   rng_file = "../data/random_lor.out";
+   rng_file = "./random_lor.out";
    outFile.open(rng_file);
 
    for (int i=0; i<n_random; i++){
@@ -78,7 +78,7 @@ int main (int argc, char *argv[]){
 
    // Exponential:
 
-   rng_file = "../data/random_exp.out";
+   rng_file = "./random_exp.out";
    outFile.open(rng_file);
 
    for (int i=0; i<n_random; i++){
@@ -89,7 +89,7 @@ int main (int argc, char *argv[]){
 
    // Theta:
 
-   rng_file = "../data/random_theta.out";
+   rng_file = "./random_theta.out";
    outFile.open(rng_file);
 
    for (int i=0; i<n_random; i++){
