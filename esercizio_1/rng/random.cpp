@@ -56,6 +56,7 @@ double Random :: RanTheta(){
     }
   }
 }
+
 double Random :: Lorentzian(double mean, double gamma) {
   double r;
   r = gamma * tan(M_PI * (Rannyu() - 0.5) ) + mean;
