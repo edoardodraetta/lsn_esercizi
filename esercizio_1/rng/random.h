@@ -34,6 +34,10 @@ public:
   double Lorentzian(double mean, double gamma);
   double Exponential(double lambda);
   double RanTheta();
+
+  double sum_uniform(int, double, double);
+  double sum_exponential(int, double);
+  double sum_lorentzian(int, double, double);
 };
 
 #endif // __Random__

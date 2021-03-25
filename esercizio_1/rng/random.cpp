@@ -30,14 +30,6 @@ void Random :: SaveSeed(){
   return;
 }
 
-// double Random :: WriteUniToFile(string fileName, Random rng, int n_random){
-//    ofstream outFile;
-//    outFile.open(fileName);
-//    for (int i=0; i<n_random; i++){
-//       outFile << rnd.Rannyu() << endl;
-//    }
-// }
-
 double Random :: RanTheta(){
   double x,y,r,theta;
   while (true){
@@ -55,6 +47,33 @@ double Random :: RanTheta(){
         r = x*x + y*y;
     }
   }
+}
+
+double Random :: sum_uniform(int M, double min, double max){
+   double sum = 0;
+   for (int j = 0; j < M; j++){
+      sum += Rannyu(min,max);
+   }
+   sum /= M;
+   return sum;
+}
+
+double Random :: sum_exponential(int M, double lambda){
+   double sum = 0;
+   for (int j = 0; j < M; j++){
+      sum += Exponential(1);
+   }
+   sum /= M;
+   return sum;
+}
+
+double Random :: sum_lorentzian(int M, double mean, double gamma){
+   double sum = 0;
+   for (int j = 0; j < M; j++){
+      sum += Lorentzian(mean, gamma);
+   }
+   sum /= M;
+   return sum;
 }
 
 double Random :: Lorentzian(double mean, double gamma) {
