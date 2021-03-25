@@ -5,6 +5,9 @@ figures
 *.sublime-project
 *.py
 
+# Data
+*.dat
+
 # Prerequisites
 *.d
 
