@@ -11,3 +11,6 @@ The jupyter notebook needs to be run sequentially.
 [ ] - Is the Cauchy fit a true fit?
 [ ] - blocked chi2 as histogram
 [ ] - Double check python code
+
+### Exercise 2
+
