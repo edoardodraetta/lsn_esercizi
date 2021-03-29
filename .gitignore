@@ -1,5 +1,4 @@
 # jupyter
-figures
 .ipynb_checkpoints
 *.sublime-workspace
 *.sublime-project
