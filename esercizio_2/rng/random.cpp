@@ -30,10 +30,30 @@ void Random :: SaveSeed(){
   return;
 }
 
-int Random :: six_Sided_Die(){
+int Random :: Six_Sided_Die(){
+  double r;
+  int die;
+  r = Rannyu(); // r ~ U[0,1)
+  if (r < 1./6){
+    die = 1;
+  } else if (r<2./6 && r>=1./6){
+    die = 2;
+  } else if (r<3./6 && r>=2./6){
+    die = 3;
+  } else if (r<4./6 && r>=3./6){
+    die = 4;
+  } else if (r<5./6 && r>=4./6){
+    die = 5;
+  } else {
+    die = 6;
+  }
+  return die;
+}
 
-
-  return roll
+double Random :: RanTheta3d(){
+  double r;
+  r = acos ( 1 - 2*Rannyu() );
+  return r;
 }
 
 double Random :: RanTheta(){
@@ -54,6 +74,7 @@ double Random :: RanTheta(){
     }
   }
 }
+
 
 double Random :: sum_uniform(int M, double min, double max){
    double sum = 0;

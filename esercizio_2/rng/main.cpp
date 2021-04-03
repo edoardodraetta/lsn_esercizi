@@ -15,6 +15,7 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 
 #include "random.h"
 #include "functions.h"
+
 using namespace std;
 
 
@@ -54,9 +55,10 @@ int main (int argc, char *argv[]){
 
    // 2.1.1 1D Integral via Monte Carlo
 
-   int M = 100000;
-   int N = 100;
-   int L = M/N;
+   int M = 100000; // Rolls
+   int N = 100;    // Blocks
+   int L = M/N;    // Rolls per block
+
    vector<double> ave(N,0);
    vector<double> av2(N,0);
 
@@ -64,7 +66,7 @@ int main (int argc, char *argv[]){
 
    for (int i = 0; i < N; i++) {
       for (int j = 0; j < L; j++) {
-         ave[i] += (M_PI/2) * cos(M_PI * (.5) * rnd.Rannyu());
+         ave[i] += (M_PI/2) * cos(M_PI * (.5) * rnd.Rannyu()); // Integrand
       }
       ave[i] /= L;
       av2[i] = (ave[i]*ave[i]);
@@ -75,18 +77,67 @@ int main (int argc, char *argv[]){
    string datafile = "./data/stats_2.1.1.dat";
    blocked_stats(ave, av2, N, datafile);
 
-   // 1.1.2 Importance Sampling
+   // 1.1.2 Importance Sampling (and UN-importance sampling?)
 
    // 2.2.1 3D Random Walk on a Cubic Lattice
 
-   // test
+   rnd.SetRandom(seed,p1,p2);
 
-   for (int i = 0; i < 10; i++){
+   int n_walks = 10000; // number of random walks per experiment
+   int n_steps = 100;   // max number of steps
 
+   vector<int> lattice(3); // current position
+
+   fill(ave.begin(), ave.end(), 0);
+   fill(av2.begin(), av2.end(), 0);
+
+   for (int i = 0; i < n_steps; i++){ // 100 random walks of steps 1, 2, ... 100
+
+      for (int j = 0; j < n_walks; j++) { // take many walks
+
+         fill(lattice.begin(), lattice.end(), 0); // start at origin
+
+         Discrete_Random_Walk(lattice, rnd, i+1); // walk i+1 steps
+
+         ave[i] += Distance_Formula_Lattice(lattice); // calculate distance from origin
+      }
+
+      ave[i] /= n_walks;
+      av2[i] = ave[i] * ave[i];
    }
 
+   datafile = "./data/stats_2.2.1.dat";
+   blocked_stats(ave, av2, n_steps, datafile);
 
+   // 2.2.2
 
+   rnd.SetRandom(seed,p1,p2);
+
+   n_walks = 10000; // number of random walks per experiment
+   n_steps = 100;   // max number of steps
+
+   vector<double> position(3); // current position
+
+   fill(ave.begin(), ave.end(), 0);
+   fill(av2.begin(), av2.end(), 0);
+
+   for (int i = 0; i < n_steps; i++){ // 100 random walks of steps 1, 2, ... 100
+
+      for (int j = 0; j < n_walks; j++) { // take many walks
+
+         fill(position.begin(), position.end(), 0); // start at origin
+
+         Continuous_Random_Walk(position, rnd, i+1); // walk i+1 steps
+
+         ave[i] += Distance_Formula(position); // calculate distance from origin
+      }
+
+      ave[i] /= n_walks;
+      av2[i] = ave[i] * ave[i];
+   }
+
+   datafile = "./data/stats_2.2.2.dat";
+   blocked_stats(ave, av2, n_steps, datafile);
 
    rnd.SaveSeed();
    return 0;

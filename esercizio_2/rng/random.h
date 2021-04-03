@@ -34,12 +34,13 @@ public:
   double Lorentzian(double mean, double gamma);
   double Exponential(double lambda);
   double RanTheta();
+  double RanTheta3d();
 
   double sum_uniform(int, double, double);
   double sum_exponential(int, double);
   double sum_lorentzian(int, double, double);
 
-  int six_sided_die();
+  int Six_Sided_Die();
 };
 
 #endif // __Random__
