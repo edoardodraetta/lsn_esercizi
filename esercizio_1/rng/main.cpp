@@ -39,7 +39,7 @@ int main (int argc, char *argv[]){
          input >> property;
          if( property == "RANDOMSEED" ){
             input >> seed[0] >> seed[1] >> seed[2] >> seed[3];
-            rnd.SetRandom(seed,p1,p2);
+            rnd.SetRandom(seed,p1,p2); // Initialize
          }
       }
       input.close();
@@ -54,9 +54,9 @@ int main (int argc, char *argv[]){
 
    // 1.1.1 First Integral
 
-   int M = 100000;
-   int N = 100;
-   int L = M/N;
+   int M = 100000; // Rolls
+   int N = 100;    // Blocks
+   int L = M/N;    // Rolls per Block
    vector<double> ave(N,0);
    vector<double> av2(N,0);
 
@@ -64,7 +64,7 @@ int main (int argc, char *argv[]){
 
    for (int i = 0; i < N; i++) {
       for (int j = 0; j < L; j++) {
-         ave[i] += rnd.Rannyu();
+         ave[i] += rnd.Rannyu(); // Integrand
       }
       ave[i] /= L;
       av2[i] = (ave[i]*ave[i]);
@@ -77,7 +77,7 @@ int main (int argc, char *argv[]){
 
    // 1.1.2 Second Integral
 
-   rnd.SetRandom(seed,p1,p2);
+   rnd.SetRandom(seed,p1,p2);       // Reinitialize
    fill(ave.begin(), av2.end(), 0);
    fill(av2.begin(), av2.end(), 0);
 
@@ -87,7 +87,7 @@ int main (int argc, char *argv[]){
    for (int i=0; i < N; i++) {
       for (int j=0; j < L; j++) {
          r = rnd.Rannyu();
-         ave[i] += (r-0.5) * (r-0.5);
+         ave[i] += (r-0.5) * (r-0.5); // Integrand
       }
       ave[i] /= L;
       av2[i] = (ave[i]*ave[i]);
@@ -100,71 +100,107 @@ int main (int argc, char *argv[]){
 
    // 1.1.3 Chi Squared Test
 
-   M = 1000000; // throws
-   N = 100;     // blocks
-   L = M/N;     // throws per block
-   int n = L/N; // Expectation value for chi2 test
-   int count;   // Experimental value for chi2 test
-   float a,b;   // Lower and upper bounds
+   rnd.SetRandom(seed,p1,p2);
 
-   float chi2_sum = 0;
-   vector<double> chi2_prog(N,0);
+   // M = 1000000; // throws
+   // N = 100;     // blocks
+   // L = M/N;     // throws per block
+   // int n = L/N; // Expectation value for chi2 test
+   // int count;   // Experimental value for chi2 test
+   // 
+
+   // float chi2_sum = 0;
+   // vector<double> chi2_prog(N,0);
+
+   int n = 10000; 
+   M = 100;
+   int E = n/M;
+   // double r;
+   int count;
+   double a,b;   // Lower and upper bounds
+   double chi_squared;
 
    ofstream statsfile;
    statsfile.open("./data/stats_1.1.3.dat");
 
-   for (int i=0; i<N; i++){
-      count = 0;
-      float r; // ok ?
-      for (int j=0; j<L; j++){
+   for (int k = 0; k < M; k++ ){       // iterations of chi^2 test
+      chi_squared = 0;
+      for (int i = 0 ; i < M; i++){    // sub-intervals
 
-         r = rnd.Rannyu();
-         a = (float)i / N;
-         b = (float)(i+1) / N;
+         a = (double) i / M;     
+         b = (double) (i+1) / M;
+         count = 0;
 
-         if ( (a <= r ) && ( r < b ) ){
-            count +=1;
+         for (int j = 0; j < n; j++){  // count hits
+            r = rnd.Rannyu();
+            if ( (a <= r ) && ( r < b ) ) count += 1; // hits
          }
+
+         chi_squared += ((count - E) * (count - E));
       }
-      chi2_sum  += ((count - n) * (count - n)) /n;
-      chi2_prog[i] = chi2_sum;
-      statsfile << count << " " << chi2_sum << " " << chi2_prog[i] << endl;
+      
+      chi_squared /= E;
+      statsfile << chi_squared << endl;
    }
 
-   statsfile.close();
+   statsfile.close(); 
 
-   // 1.2 The Central Limit Theorem
+   // double r;
+   // for (int i=0; i<N; i++){
+   //    count = 0;
+   //    for (int j=0; j<L; j++){
+
+   //       r = rnd.Rannyu();
+   //       a = (float)i / N;
+   //       b = (float)(i+1) / N;
+
+   //       if ( (a <= r ) && ( r < b ) ){
+   //          count +=1;
+   //       }
+   //    }
+
+   //    chi2_sum  += ((count - n) * (count - n)) /n;
+   //    chi2_prog[i] = chi2_sum;
+   //    statsfile << count << " " << chi2_sum << " " << chi2_prog[i] << endl;
+   // }
+
+
+
+   // 1.2 Testing the Central Limit Theorem
 
    rnd.SetRandom(seed,p1,p2);
 
-   int n_sums = 10000; // We sum m random numbers n_sums times
-   vector<int> m_numbers = {1,2,10,100};
+   int n_sums = 10000;     // Number of sums to compute
+   vector<int> sums = {1,2,10,100};  
 
-   // Uniform
+   // Uniform Distribtution
+
    statsfile.open("./data/stats_1.2.1.dat");
    for (int i = 0; i < n_sums; i++){
-      for (int j = 0; j < m_numbers.size(); j++){
-         statsfile << rnd.sum_uniform(m_numbers[j],0,1) << " ";
+      for (int j = 0; j < sums.size(); j++){
+         statsfile << rnd.sum_uniform(sums[j],0,1) << " ";
       }
       statsfile << endl;
    }
    statsfile.close();
 
-   // Exponential
+   // Exponential Distribtution
+
    statsfile.open("./data/stats_1.2.2.dat");
    for (int i = 0; i < n_sums; i++){
-      for (int j = 0; j < m_numbers.size(); j++){
-         statsfile << rnd.sum_exponential(m_numbers[j],1) << " ";
+      for (int j = 0; j < sums.size(); j++){
+         statsfile << rnd.sum_exponential(sums[j],1) << " ";
       }
       statsfile << endl;
    }
    statsfile.close();
 
-   // Lorentzian
+   // Lorentzian Distribtution
+
    statsfile.open("./data/stats_1.2.3.dat");
    for (int i = 0; i < n_sums; i++){
-      for (int j = 0; j < m_numbers.size(); j++){
-         statsfile << rnd.sum_lorentzian(m_numbers[j],0,1) << " ";
+      for (int j = 0; j < sums.size(); j++){
+         statsfile << rnd.sum_lorentzian(sums[j],0,1) << " ";
       }
       statsfile << endl;
    }
@@ -172,11 +208,11 @@ int main (int argc, char *argv[]){
 
    // 1.3 Buffon Experiment
 
-   rnd.SetRandom(seed,p1,p2);
+   rnd.SetRandom(seed,p1,p2); // Reinitialize rng
 
-   M = 10000000; // throws
-   N = 100;      // blocks
-   int T = M/N;  // throws per block
+   M = 10000000;     // throws
+   N = 100;          // blocks
+   int T = M/N;      // throws per block
    float d = 10;     // distance between gridlines
    float length = 5; // needle length
 
@@ -186,14 +222,15 @@ int main (int argc, char *argv[]){
    vector<double> pi_estimate(N,0);
    vector<double> pi2_estimate(N,0);
 
-   // Run the experiment
    for (int i = 0; i < N; i++){
       hits = 0;
       for (int j = 0; j < T; j++){
-         t = rnd.RanTheta();
-         y1 = d * rnd.Rannyu();
-         y2 = y1 + length * sin(t);
-         if ((y1<0 || y1>10) || (y2<0 || y2>10)) {
+
+         t = rnd.RanTheta();        // needle rotation
+         y1 = d * rnd.Rannyu();     // place one end of the needle
+         y2 = y1 + length * sin(t); // calculate the other end
+
+         if ((y1<0 || y1>10) || (y2<0 || y2>10)) { // check for hits
             hits += 1;
          }
       }
@@ -202,6 +239,7 @@ int main (int argc, char *argv[]){
    }
 
    // Statistics
+
    datafile = "./data/stats_1.3.dat";
    blocked_stats(pi_estimate, pi2_estimate, N, datafile);
 

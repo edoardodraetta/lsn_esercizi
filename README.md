@@ -10,14 +10,17 @@ The jupyter notebook needs to be run sequentially.
 #### TO DO:
 
 [ ] - Is the Cauchy fit a true fit?
-[ ] - Blocked chi2 as histogram
+[x] - chi2
 [ ] - Double check python code
 [ ] - Pass average calculation by reference?
+[ ] - move data out of rng
+[ ] - 2d theta correct
 
 ### Exercise 2
 
 [ ] - Importance Sampling
 [ ] - Are my RWs correct?
+[ ] - improve rw fit
 [ ] - Simplify RWs
 [ ] - Simplify random.cpp 
 [ ] - Simplify functions.cpp
