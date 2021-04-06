@@ -50,10 +50,12 @@ int Random :: Six_Sided_Die(){
   return die;
 }
 
+double Random :: RanCos(){
+  return asin (Rannyu()) * (M_PI/2);
+}
+
 double Random :: RanTheta3d(){
-  double r;
-  r = acos ( 1 - 2*Rannyu() );
-  return r;
+  return acos ( 1 - 2*Rannyu() );
 }
 
 double Random :: RanTheta(){

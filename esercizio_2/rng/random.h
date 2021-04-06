@@ -35,6 +35,7 @@ public:
   double Exponential(double lambda);
   double RanTheta();
   double RanTheta3d();
+  double RanCos();
 
   double sum_uniform(int, double, double);
   double sum_exponential(int, double);

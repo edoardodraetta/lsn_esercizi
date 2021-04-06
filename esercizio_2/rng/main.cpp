@@ -14,7 +14,8 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 #include <vector>
 
 #include "random.h"
-#include "functions.h"
+#include "statistics.h"
+#include "RandomWalk.h"
 
 using namespace std;
 
@@ -74,10 +75,34 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   string datafile = "./data/stats_2.1.1.dat";
+   string datafile = "../data/stats_2.1.1.dat";
    blocked_stats(ave, av2, N, datafile);
 
-   // 1.1.2 Importance Sampling (and UN-importance sampling?)
+   // 1.1.2 Importance Sampling
+
+   rnd.SetRandom(seed,p1,p2);
+
+   M = 100000; // Rolls
+   N = 100;    // Blocks
+   L = M/N;    // Rolls per block
+
+   fill(ave.begin(), ave.end(), 0);
+   fill(av2.begin(), av2.end(), 0);
+
+   // Integrate
+
+   for (int i = 0; i < N; i++) {
+      for (int j = 0; j < L; j++) {
+         ave[i] += rnd.RanCos(); // Integrand
+      }
+      ave[i] /= L;
+      av2[i] = (ave[i]*ave[i]);
+   }
+
+   // Cumulative blocked statistics
+
+   datafile = "../data/stats_2.1.2.dat";
+   blocked_stats(ave, av2, N, datafile);
 
    // 2.2.1 3D Random Walk on a Cubic Lattice
 
@@ -95,9 +120,11 @@ int main (int argc, char *argv[]){
 
       for (int j = 0; j < n_walks; j++) { // take many walks
 
-         fill(lattice.begin(), lattice.end(), 0); // start at origin
+         lattice[0] = 0; // start at origin
+         lattice[1] = 0;
+         lattice[2] = 0;
 
-         Discrete_Random_Walk(lattice, rnd, i+1); // walk i+1 steps
+         Discrete_Random_Walk(lattice, rnd, i);
 
          ave[i] += Distance_Formula_Lattice(lattice); // calculate distance from origin
       }
@@ -106,7 +133,7 @@ int main (int argc, char *argv[]){
       av2[i] = ave[i] * ave[i];
    }
 
-   datafile = "./data/stats_2.2.1.dat";
+   datafile = "../data/stats_2.2.1.dat";
    blocked_stats(ave, av2, n_steps, datafile);
 
    // 2.2.2
@@ -121,13 +148,15 @@ int main (int argc, char *argv[]){
    fill(ave.begin(), ave.end(), 0);
    fill(av2.begin(), av2.end(), 0);
 
-   for (int i = 0; i < n_steps; i++){ // 100 random walks of steps 1, 2, ... 100
+   for (int i = 0; i < n_steps; i++){ // 100 random walks of steps 0, 1, 2, ... 100
 
       for (int j = 0; j < n_walks; j++) { // take many walks
 
-         fill(position.begin(), position.end(), 0); // start at origin
+         position[0] = 0;   // start at origin
+         position[1] = 0;
+         position[2] = 0;
 
-         Continuous_Random_Walk(position, rnd, i+1); // walk i+1 steps
+         Continuous_Random_Walk(position, rnd, i); 
 
          ave[i] += Distance_Formula(position); // calculate distance from origin
       }
@@ -136,14 +165,12 @@ int main (int argc, char *argv[]){
       av2[i] = ave[i] * ave[i];
    }
 
-   datafile = "./data/stats_2.2.2.dat";
+   datafile = "../data/stats_2.2.2.dat";
    blocked_stats(ave, av2, n_steps, datafile);
 
    rnd.SaveSeed();
    return 0;
 }
-
-
 
 /****************************************************************
 *****************************************************************
