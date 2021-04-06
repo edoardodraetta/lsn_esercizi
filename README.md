@@ -9,18 +9,19 @@ The jupyter notebook needs to be run sequentially.
 
 #### TO DO:
 
-[ ] - Is the Cauchy fit a true fit?
-[x] - chi2
-[ ] - Double check python code
-[ ] - Pass average calculation by reference?
-[ ] - move data out of rng
-[ ] - 2d theta correct
+ - [ ] Is the Cauchy fit a true fit?
+ - [x] chi2
+ - [ ] Double check python code
+ - [ ] Pass average calculation by reference?
+ - [x] move data folder out of rng
+ - [ ] 2d theta correct
 
 ### Exercise 2
 
-[ ] - Importance Sampling
-[ ] - Are my RWs correct?
-[ ] - improve rw fit
-[ ] - Simplify RWs
-[ ] - Simplify random.cpp 
-[ ] - Simplify functions.cpp
+ - [x] Importance Sampling
+ - [ ] Are my RWs correct?
+ - [x] RW fit
+
+### Exercise 3
+
+ - [ ] do the math/scratchwork before you code!
