@@ -57,12 +57,12 @@ int main (int argc, char *argv[]){
 
    // Params
 
-   float S = 100;
-   float S_t;
-   float T = 1;
-   float K = 100;
-   float r = 0.1; // mu = r
-   float sigma = 0.25;
+   double S = 100;
+   double S_t;
+   double T = 1;
+   double K = 100;
+   double r = 0.1; // mu = r
+   double sigma = 0.25;
 
    // Black-Scholes Solution to Option Pricing
 
@@ -77,8 +77,10 @@ int main (int argc, char *argv[]){
 
    double diff;
 
-   vector<double> ave(N,0);
-   vector<double> av2(N,0);
+   vector<double> call_ave(N,0);
+   vector<double> call_av2(N,0);
+   vector<double> put_ave(N,0);
+   vector<double> put_av2(N,0);
 
    for (int i = 0; i < N; i++){
       S_t = 100;
@@ -86,17 +88,26 @@ int main (int argc, char *argv[]){
          S_t = GBM(S,T,r,sigma,rnd);
 
          diff = S_t-K;
-         ave[i] += exp(-r*T)*max(0.,diff); // Call Price
+         call_ave[i] += exp(-r*T)*max(0., diff); // Call Price
+
+         diff = K-S_t;
+         put_ave[i] += exp(-r*T)*max(0., diff); // Put Price
       }
 
-      ave[i] /= M; // average price
-      av2[i] = ave[i]*ave[i];
+      call_ave[i] /= M;
+      call_av2[i] = call_ave[i]*call_ave[i];
+
+      put_ave[i] /= M;
+      put_av2[i] = put_ave[i]*put_ave[i];
    }
 
    // Cumulative blocked statistics
 
-   string datafile = "../data/stats_3.1.1.dat";
-   blocked_stats(ave, av2, N, datafile);
+   string datafile = "../data/stats_3.1.1_call.dat";
+   blocked_stats(call_ave, call_av2, N, datafile);
+
+   datafile = "../data/stats_3.1.1_put.dat";
+   blocked_stats(put_ave, put_av2, N, datafile);
 
    // 3.1.2 - Path Sampling of GBM
 
@@ -104,25 +115,39 @@ int main (int argc, char *argv[]){
    int timesteps = 100;
    float t = T / timesteps;
 
-   fill(ave.begin(), ave.end(), 0);
-   fill(av2.begin(), av2.end(), 0);
+   fill(call_ave.begin(), call_ave.end(), 0);
+   fill(call_av2.begin(), call_av2.end(), 0);
+   fill(put_ave.begin(), put_ave.end(), 0);
+   fill(put_av2.begin(), put_av2.end(), 0);
 
-   for (int i = 0; i < N; i++){
+   for (int i = 0; i < N; i++){ // Blocks
 
-      for (int j = 0; j < M; j++){
+      for (int j = 0; j < M; j++){ // M samples
+
          S_t = 100;
-         for (int k = 0; k < timesteps; k++){   
-            S_t = GBM(S_t,t,r,sigma,rnd);
+         for (int k = 0; k < timesteps; k++){ // Path simulation
+            S_t = GBM(S_t, t, r, sigma, rnd);
          }
+
          diff = S_t-K;
-         ave[i] += exp(-r*T)*max(0., diff); // Call Price
+         call_ave[i] += exp(-r*T)*max(0., diff); // Call Price
+
+         diff = K-S_t;
+         put_ave[i] += exp(-r*T)*max(0., diff); // Put Price
+
       }
-      ave[i] /= M;
-      av2[i] = ave[i]*ave[i];
+      call_ave[i] /= M;
+      call_av2[i] = call_ave[i]*call_ave[i];
+
+      put_ave[i] /= M;
+      put_av2[i] = put_ave[i]*put_ave[i];
    }
 
-   datafile = "../data/stats_3.1.2.dat";
-   blocked_stats(ave, av2, N, datafile);
+   datafile = "../data/stats_3.1.2_call.dat";
+   blocked_stats(call_ave, call_av2, N, datafile);
+
+   datafile = "../data/stats_3.1.2_put.dat";
+   blocked_stats(put_ave, put_av2, N, datafile);
 
    rnd.SaveSeed();
    return 0;

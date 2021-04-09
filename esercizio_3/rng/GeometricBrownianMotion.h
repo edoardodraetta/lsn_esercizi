@@ -2,11 +2,11 @@
 #define __GeometricBrownianMotion__
 
 
-float GBM(float, float, float, float, Random &);
+double GBM(double, double, double, double, Random &);
 
 // Black-Scholes:
-float call_option(float, float, float, float, float);
-float put_option(float, float, float, float, float);
-float N(float);
+double call_option(double, double, double, double, double);
+double put_option(double, double, double, double, double);
+double N(double);
 
 #endif 
