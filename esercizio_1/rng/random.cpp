@@ -31,22 +31,21 @@ void Random :: SaveSeed(){
 }
 
 double Random :: RanTheta(){
+
   double x,y,r,theta;
-  while (true){
-    // random radius
+
+  x = Rannyu(-1,1);
+  y = Rannyu(-1,1);
+  r = x*x + y*y;
+
+  while (r>1){
     x = Rannyu(-1,1);
     y = Rannyu(-1,1);
     r = x*x + y*y;
-    // if radius is in unit circle, calculate theta
-    if (r<=1){
-      theta = 2 * acos (x / sqrt (r) );
-      return theta;
-    } else {
-        x = Rannyu(-1,1);
-        y = Rannyu(-1,1);
-        r = x*x + y*y;
-    }
   }
+
+  theta = 2 * acos (x / sqrt (r) );
+  return theta;
 }
 
 double Random :: sum_uniform(int M, double min, double max){
