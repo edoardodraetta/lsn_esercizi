@@ -56,7 +56,7 @@ int main (int argc, char *argv[]){
 
    // 2.1.1 1D Integral via Monte Carlo
 
-   int M = 100000; // Rolls
+   int M = 1000000; // Rolls
    int N = 100;    // Blocks
    int L = M/N;    // Rolls per block
 
@@ -82,7 +82,7 @@ int main (int argc, char *argv[]){
 
    rnd.SetRandom(seed,p1,p2);
 
-   M = 100000; // Rolls
+   M = 1000000; // Rolls
    N = 100;    // Blocks
    L = M/N;    // Rolls per block
 
@@ -111,12 +111,12 @@ int main (int argc, char *argv[]){
    int n_walks = 10000; // number of random walks per experiment
    int n_steps = 100;   // max number of steps
 
-   vector<int> lattice(3); // current position
-
    fill(ave.begin(), ave.end(), 0);
    fill(av2.begin(), av2.end(), 0);
 
-   for (int i = 0; i < n_steps; i++){ // 100 random walks of steps 1, 2, ... 100
+   vector<int> lattice(3); // current position
+
+   for (int i = 0; i < n_steps; i++){ // 100 random walks of steps 1, 2, ... , 100
 
       for (int j = 0; j < n_walks; j++) { // take many walks
 
@@ -124,7 +124,7 @@ int main (int argc, char *argv[]){
          lattice[1] = 0;
          lattice[2] = 0;
 
-         Discrete_Random_Walk(lattice, rnd, i);
+         Discrete_Random_Walk(lattice, rnd, i+1);
 
          ave[i] += Distance_Formula_Lattice(lattice); // calculate distance from origin
       }
@@ -133,6 +133,8 @@ int main (int argc, char *argv[]){
       av2[i] = ave[i] * ave[i];
    }
 
+   // Statistics
+   
    datafile = "../data/stats_2.2.1.dat";
    blocked_stats(ave, av2, n_steps, datafile);
 
