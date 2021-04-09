@@ -72,8 +72,10 @@ int main (int argc, char *argv[]){
 
    // 3.1.1 - Direct Sampling of GBM
 
-   int M = 100000;
+   int M = 10000;
    int N = 100;
+
+   double diff;
 
    vector<double> ave(N,0);
    vector<double> av2(N,0);
@@ -83,11 +85,11 @@ int main (int argc, char *argv[]){
       for (int j = 0; j < M; j++){
          S_t = GBM(S,T,r,sigma,rnd);
 
-         ave[i] += exp(-r*T)* max(0,K-S_t);
+         diff = S_t-K;
+         ave[i] += exp(-r*T)*max(0.,diff); // Call Price
       }
 
       ave[i] /= M; // average price
-
       av2[i] = ave[i]*ave[i];
    }
 
@@ -112,7 +114,8 @@ int main (int argc, char *argv[]){
          for (int k = 0; k < timesteps; k++){   
             S_t = GBM(S_t,t,r,sigma,rnd);
          }
-         ave[i] += exp(-r*T)* max(0, S_t-K); // max doesn't work this way
+         diff = S_t-K;
+         ave[i] += exp(-r*T)*max(0., diff); // Call Price
       }
       ave[i] /= M;
       av2[i] = ave[i]*ave[i];

@@ -10,10 +10,6 @@ float GBM(float S, float T, float mu, float sigma , Random & rnd){
 	return S*exp( (mu-0.5 * sigma*sigma)*T + sigma*rnd.Gauss(0,1)*sqrt(T));
 }
 
-float buyer(float S, float K){
-	
-}
-
 // Black-Scholes:
 
 float N(float x){
