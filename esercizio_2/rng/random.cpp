@@ -50,8 +50,8 @@ int Random :: Six_Sided_Die(){
   return die;
 }
 
-double Random :: RanCos(){
-  return asin (Rannyu()) * (M_PI/2);
+double Random :: ImportanceSample(){
+  return (0.5)*(1. - sqrt(1.- 4*Rannyu()));
 }
 
 double Random :: RanTheta3d(){

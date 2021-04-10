@@ -59,6 +59,7 @@ int main (int argc, char *argv[]){
    int M = 1000000; // Rolls
    int N = 100;    // Blocks
    int L = M/N;    // Rolls per block
+   double r;
 
    vector<double> ave(N,0);
    vector<double> av2(N,0);
@@ -82,7 +83,7 @@ int main (int argc, char *argv[]){
 
    rnd.SetRandom(seed,p1,p2);
 
-   M = 1000000; // Rolls
+   M = 1000; // Rolls
    N = 100;    // Blocks
    L = M/N;    // Rolls per block
 
@@ -93,7 +94,9 @@ int main (int argc, char *argv[]){
 
    for (int i = 0; i < N; i++) {
       for (int j = 0; j < L; j++) {
-         ave[i] += rnd.RanCos(); // Integrand
+         r = rnd.ImportanceSample();
+         cout << r << endl;;
+         ave[i] += (M_PI/2)*cos((M_PI/2)*r) / (2 - 2*r); // Integrand
       }
       ave[i] /= L;
       av2[i] = (ave[i]*ave[i]);
@@ -134,7 +137,7 @@ int main (int argc, char *argv[]){
    }
 
    // Statistics
-   
+
    datafile = "../data/stats_2.2.1.dat";
    blocked_stats(ave, av2, n_steps, datafile);
 
@@ -158,7 +161,7 @@ int main (int argc, char *argv[]){
          position[1] = 0;
          position[2] = 0;
 
-         Continuous_Random_Walk(position, rnd, i); 
+         Continuous_Random_Walk(position, rnd, i);
 
          ave[i] += Distance_Formula(position); // calculate distance from origin
       }
