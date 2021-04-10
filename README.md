@@ -4,7 +4,7 @@ LSN exercise delivery.
 
 ### Instructions
 
-Run `make` in `.esercizio_x/rng/` to generate `main.exe`, which will run all simulations. 
+Run `make` in `.esercizio_x/rng/` to generate `main.exe`, which will run all simulations.
 
 ### Exercise 1
 
@@ -12,12 +12,13 @@ Run `make` in `.esercizio_x/rng/` to generate `main.exe`, which will run all sim
 
 ### Exercise 2
 
- - [ ] Fix importance sampling. I = 0.9 ?
+ - [ ] Fix importance sampling. I broke it more, but it's not like it was working beforehand
  - [ ] Are my RWs correct? k = 0.6
 
 ### Exercise 3
 
  - [x] do the math/scratchwork before you code!
- - [ ] implement max comparator
- - [ ] reinitialize rng
- - [ ] implement call/puts (same file!)  
+ - [x] implement max comparator
+ - [x] reinitialize rng
+ - [x] implement call/puts (same file!)
+ - [ ] should my methods be giving different results
