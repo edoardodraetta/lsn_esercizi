@@ -4,7 +4,7 @@ LSN exercise delivery.
 
 ### Instructions
 
-Run `make` in `.esercizio_x/rng/` to generate `main.exe`, which will run all simulations.
+Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will run all simulations for the given exercise.
 
 ### Exercise 1
 
