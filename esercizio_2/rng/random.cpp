@@ -51,8 +51,13 @@ int Random :: Six_Sided_Die(){
 }
 
 double Random :: ImportanceSample(){
-  return (0.5)*(1. - sqrt(1.- 4*Rannyu()));
+  return 1 - sqrt(1-Rannyu());
 }
+
+double Random :: UnImportanceSample(){
+  return -sqrt(Rannyu());
+}
+
 
 double Random :: RanTheta3d(){
   return acos ( 1 - 2*Rannyu() );

@@ -36,6 +36,7 @@ public:
   double RanTheta();
   double RanTheta3d();
   double ImportanceSample();
+  double UnImportanceSample();
 
   double sum_uniform(int, double, double);
   double sum_exponential(int, double);

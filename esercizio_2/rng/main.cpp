@@ -79,11 +79,38 @@ int main (int argc, char *argv[]){
    string datafile = "../data/stats_2.1.1.dat";
    blocked_stats(ave, av2, N, datafile);
 
-   // 1.1.2 Importance Sampling
+   // 1.1.2 Importance Sampling with 1-x distribution
 
-   rnd.SetRandom(seed,p1,p2);
+   // rnd.SetRandom(seed,p1,p2);
 
-   M = 1000; // Rolls
+   M = 1000000; // Rolls
+   N = 100;    // Blocks
+   L = M/N;    // Rolls per block
+
+   fill(ave.begin(), ave.end(), 0);
+   fill(av2.begin(), av2.end(), 0);
+
+   // Integrate
+
+   for (int i = 0; i < N; i++) {
+      for (int j = 0; j < L; j++) {
+         r = rnd.UnImportanceSample();
+         ave[i] +=-(M_PI/4)*cos((M_PI/2)*r) / (r); // Integrand
+      }
+      ave[i] /= L;
+      av2[i] = (ave[i]*ave[i]);
+   }
+
+   // Cumulative blocked statistics
+
+   datafile = "../data/stats_2.1.3.dat";
+   blocked_stats(ave, av2, N, datafile);
+
+   // 1.1.3? Unimportance Sampling with x distribution
+
+   // rnd.SetRandom(seed,p1,p2);
+
+   M = 1000000; // Rolls
    N = 100;    // Blocks
    L = M/N;    // Rolls per block
 
@@ -95,8 +122,7 @@ int main (int argc, char *argv[]){
    for (int i = 0; i < N; i++) {
       for (int j = 0; j < L; j++) {
          r = rnd.ImportanceSample();
-         cout << r << endl;;
-         ave[i] += (M_PI/2)*cos((M_PI/2)*r) / (2 - 2*r); // Integrand
+         ave[i] +=-(M_PI/4)*cos((M_PI/2)*r) / (r - 1); // Integrand
       }
       ave[i] /= L;
       av2[i] = (ave[i]*ave[i]);
@@ -109,7 +135,7 @@ int main (int argc, char *argv[]){
 
    // 2.2.1 3D Random Walk on a Cubic Lattice
 
-   rnd.SetRandom(seed,p1,p2);
+   // rnd.SetRandom(seed,p1,p2);
 
    int n_walks = 10000; // number of random walks per experiment
    int n_steps = 100;   // max number of steps
@@ -127,7 +153,7 @@ int main (int argc, char *argv[]){
          lattice[1] = 0;
          lattice[2] = 0;
 
-         Discrete_Random_Walk(lattice, rnd, i+1);
+         Discrete_Random_Walk(lattice, rnd, i);
 
          ave[i] += Distance_Formula_Lattice(lattice); // calculate distance from origin
       }
@@ -143,7 +169,7 @@ int main (int argc, char *argv[]){
 
    // 2.2.2
 
-   rnd.SetRandom(seed,p1,p2);
+   // rnd.SetRandom(seed,p1,p2);
 
    n_walks = 10000; // number of random walks per experiment
    n_steps = 100;   // max number of steps

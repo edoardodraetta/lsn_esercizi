@@ -7,7 +7,7 @@ main.o : main.cpp
 	$(CC) -c main.cpp -o main.o $(CFLAGS)
 statistics.o : statistics.cpp statistics.h
 	$(CC) -c statistics.cpp -o statistics.o $(CFLAGS)
-RandomWalk.o : RandomWalk.cpp RandomWalk.h
+RandomWalk.o : RandomWalk.cpp RandomWalk.h random.h
 	$(CC) -c RandomWalk.cpp -o RandomWalk.o $(CFLAGS)
 random.o : random.cpp random.h
 	$(CC) -c random.cpp -o random.o $(CFLAGS)
