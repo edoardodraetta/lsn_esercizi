@@ -72,12 +72,12 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   string datafile = "../data/stats_1.1.1.dat";
+   string datafile = "../../data/stats_1.1.1.dat";
    blocked_stats(ave, av2, N, datafile);
 
    // 1.1.2 Second Integral
 
-   rnd.SetRandom(seed,p1,p2);       // Reinitialize
+   // rnd.SetRandom(seed,p1,p2);       // Reinitialize
    fill(ave.begin(), av2.end(), 0);
    fill(av2.begin(), av2.end(), 0);
 
@@ -95,14 +95,14 @@ int main (int argc, char *argv[]){
 
    // Statistics
 
-   datafile = "../data/stats_1.1.2.dat";
+   datafile = "../../data/stats_1.1.2.dat";
    blocked_stats(ave, av2, N, datafile);
 
    // 1.1.3 Chi Squared Test
 
-   rnd.SetRandom(seed,p1,p2);
+   // rnd.SetRandom(seed,p1,p2);
 
-   int n = 10000; 
+   int n = 10000;
    M = 100;
    int E = n/M;
    // double r;
@@ -111,13 +111,13 @@ int main (int argc, char *argv[]){
    double chi_squared;
 
    ofstream statsfile;
-   statsfile.open("../data/stats_1.1.3.dat");
+   statsfile.open("../../data/stats_1.1.3.dat");
 
    for (int k = 0; k < M; k++ ){       // iterations of chi^2 test
       chi_squared = 0;
       for (int i = 0 ; i < M; i++){    // sub-intervals
 
-         a = (double) i / M;     
+         a = (double) i / M;
          b = (double) (i+1) / M;
          count = 0;
 
@@ -128,23 +128,23 @@ int main (int argc, char *argv[]){
 
          chi_squared += ((count - E) * (count - E));
       }
-      
+
       chi_squared /= E;
       statsfile << chi_squared << endl;
    }
 
-   statsfile.close(); 
+   statsfile.close();
 
    // 1.2 Testing the Central Limit Theorem
 
-   rnd.SetRandom(seed,p1,p2);
+   // rnd.SetRandom(seed,p1,p2);
 
    int n_sums = 10000;     // Number of sums to compute
-   vector<int> sums = {1,2,10,100};  
+   vector<int> sums = {1,2,10,100};
 
    // Uniform Distribtution
 
-   statsfile.open("../data/stats_1.2.1.dat");
+   statsfile.open("../../data/stats_1.2.1.dat");
    for (int i = 0; i < n_sums; i++){
       for (int j = 0; j < sums.size(); j++){
          statsfile << rnd.sum_uniform(sums[j],0,1) << " ";
@@ -155,7 +155,7 @@ int main (int argc, char *argv[]){
 
    // Exponential Distribtution
 
-   statsfile.open("../data/stats_1.2.2.dat");
+   statsfile.open("../../data/stats_1.2.2.dat");
    for (int i = 0; i < n_sums; i++){
       for (int j = 0; j < sums.size(); j++){
          statsfile << rnd.sum_exponential(sums[j],1) << " ";
@@ -166,7 +166,7 @@ int main (int argc, char *argv[]){
 
    // Lorentzian Distribtution
 
-   statsfile.open("../data/stats_1.2.3.dat");
+   statsfile.open("../../data/stats_1.2.3.dat");
    for (int i = 0; i < n_sums; i++){
       for (int j = 0; j < sums.size(); j++){
          statsfile << rnd.sum_lorentzian(sums[j],0,1) << " ";
@@ -177,7 +177,7 @@ int main (int argc, char *argv[]){
 
    // 1.3 Buffon Experiment
 
-   rnd.SetRandom(seed,p1,p2); // Reinitialize rng
+   // rnd.SetRandom(seed,p1,p2); // Reinitialize rng
 
    M = 10000000;     // throws
    N = 100;          // blocks
@@ -209,7 +209,7 @@ int main (int argc, char *argv[]){
 
    // Statistics
 
-   datafile = "../data/stats_1.3.dat";
+   datafile = "../../data/stats_1.3.dat";
    blocked_stats(pi_estimate, pi2_estimate, N, datafile);
 
    rnd.SaveSeed();
