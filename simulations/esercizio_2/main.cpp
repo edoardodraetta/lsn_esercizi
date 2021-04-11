@@ -54,6 +54,8 @@ int main (int argc, char *argv[]){
    }
    cout << endl;
 
+/*===========================================================================*/
+
    // 2.1.1 1D Integral via Monte Carlo
 
    int M = 1000000; // Rolls
@@ -79,7 +81,7 @@ int main (int argc, char *argv[]){
    string datafile = "../../data/stats_2.1.1.dat";
    blocked_stats(ave, av2, N, datafile);
 
-   // 1.1.2 Importance Sampling with 1-x distribution
+   // 2.1.2 Importance Sampling with 1-x distribution
 
    // rnd.SetRandom(seed,p1,p2);
 
@@ -106,7 +108,7 @@ int main (int argc, char *argv[]){
    datafile = "../../data/stats_2.1.3.dat";
    blocked_stats(ave, av2, N, datafile);
 
-   // 1.1.3? Unimportance Sampling with x distribution
+   // 2.1.3? Unimportance Sampling with x distribution
 
    // rnd.SetRandom(seed,p1,p2);
 
@@ -133,6 +135,8 @@ int main (int argc, char *argv[]){
    datafile = "../../data/stats_2.1.2.dat";
    blocked_stats(ave, av2, N, datafile);
 
+/*===========================================================================*/
+
    // 2.2.1 3D Random Walk on a Cubic Lattice
 
    // rnd.SetRandom(seed,p1,p2);
@@ -153,7 +157,7 @@ int main (int argc, char *argv[]){
          lattice[1] = 0;
          lattice[2] = 0;
 
-         Discrete_Random_Walk(lattice, rnd, i);
+         Discrete_Random_Walk(lattice, rnd, i+1);
 
          ave[i] += Distance_Formula_Lattice(lattice); // calculate distance from origin
       }
@@ -179,7 +183,7 @@ int main (int argc, char *argv[]){
    fill(ave.begin(), ave.end(), 0);
    fill(av2.begin(), av2.end(), 0);
 
-   for (int i = 0; i < n_steps; i++){ // 100 random walks of steps 0, 1, 2, ... 100
+   for (int i = 0; i < n_steps; i++){ // 100 random walks of steps 1, 1, 2, ... 100
 
       for (int j = 0; j < n_walks; j++) { // take many walks
 
@@ -187,8 +191,7 @@ int main (int argc, char *argv[]){
          position[1] = 0;
          position[2] = 0;
 
-         Continuous_Random_Walk(position, rnd, i);
-
+         Continuous_Random_Walk(position, rnd, i+1);
          ave[i] += Distance_Formula(position); // calculate distance from origin
       }
 
