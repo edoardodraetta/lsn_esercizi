@@ -76,7 +76,7 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   string datafile = "../data/stats_2.1.1.dat";
+   string datafile = "../../data/stats_2.1.1.dat";
    blocked_stats(ave, av2, N, datafile);
 
    // 1.1.2 Importance Sampling with 1-x distribution
@@ -103,7 +103,7 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   datafile = "../data/stats_2.1.3.dat";
+   datafile = "../../data/stats_2.1.3.dat";
    blocked_stats(ave, av2, N, datafile);
 
    // 1.1.3? Unimportance Sampling with x distribution
@@ -130,7 +130,7 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   datafile = "../data/stats_2.1.2.dat";
+   datafile = "../../data/stats_2.1.2.dat";
    blocked_stats(ave, av2, N, datafile);
 
    // 2.2.1 3D Random Walk on a Cubic Lattice
@@ -164,7 +164,7 @@ int main (int argc, char *argv[]){
 
    // Statistics
 
-   datafile = "../data/stats_2.2.1.dat";
+   datafile = "../../data/stats_2.2.1.dat";
    blocked_stats(ave, av2, n_steps, datafile);
 
    // 2.2.2
@@ -196,7 +196,7 @@ int main (int argc, char *argv[]){
       av2[i] = ave[i] * ave[i];
    }
 
-   datafile = "../data/stats_2.2.2.dat";
+   datafile = "../../data/stats_2.2.2.dat";
    blocked_stats(ave, av2, n_steps, datafile);
 
    rnd.SaveSeed();
