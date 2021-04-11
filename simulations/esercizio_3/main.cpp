@@ -55,6 +55,9 @@ int main (int argc, char *argv[]){
    }
    cout << endl;
 
+
+/*===========================================================================*/
+
    // Params
 
    double S = 100;
@@ -70,9 +73,12 @@ int main (int argc, char *argv[]){
    cout << "Call Price: " << call_option(S,T,K,sigma,r) << endl;
    cout << "Put Price: " << put_option(S,T,K,sigma,r) << endl;
 
+
+/*===========================================================================*/
+
    // 3.1.1 - Direct Sampling of GBM
 
-   int M = 10000;
+   int M = 100000;
    int N = 100;
 
    double diff;
@@ -85,6 +91,7 @@ int main (int argc, char *argv[]){
    for (int i = 0; i < N; i++){
       S_t = 100;
       for (int j = 0; j < M; j++){
+
          S_t = GBM(S,T,r,sigma,rnd);
 
          diff = S_t-K;
@@ -101,10 +108,6 @@ int main (int argc, char *argv[]){
       put_av2[i] = put_ave[i]*put_ave[i];
    }
 
-   cout << "== Direct Sampling of S(T) ==" << endl;
-   cout << "Call Price: " << call_ave.back() << endl;
-   cout << "Put Price: " << put_ave.back() << endl;
-
    // Cumulative blocked statistics
 
    string datafile = "../../data/stats_3.1.1_call.dat";
@@ -115,9 +118,9 @@ int main (int argc, char *argv[]){
 
    // 3.1.2 - Path Sampling of GBM
 
-   rnd.SetRandom(seed,p1,p2);
+   // rnd.SetRandom(seed,p1,p2);
 
-   M = 10000;
+   M = 100000;
    int timesteps = 100;
    float t = T / timesteps;
 
@@ -127,9 +130,7 @@ int main (int argc, char *argv[]){
    fill(put_av2.begin(), put_av2.end(), 0);
 
    for (int i = 0; i < N; i++){ // Blocks
-
       for (int j = 0; j < M; j++){ // Sampling the future price
-
          S_t = 100;
          for (int k = 0; k < timesteps; k++){ // Path simulation
             S_t = GBM(S_t, t, r, sigma, rnd);
@@ -140,7 +141,6 @@ int main (int argc, char *argv[]){
 
          diff = K-S_t;
          put_ave[i] += exp(-r*T)*max(0., diff); // Put Price
-
       }
       call_ave[i] /= M;
       call_av2[i] = call_ave[i]*call_ave[i];
@@ -149,10 +149,6 @@ int main (int argc, char *argv[]){
       put_av2[i] = put_ave[i]*put_ave[i];
    }
 
-   cout << "== Path Sampling of S(T) ==" << endl;
-   cout << "Call Price: " << call_ave.back() << endl;
-   cout << "Put Price: " << put_ave.back()<< endl;
-
    // Statistics
 
    datafile = "../../data/stats_3.1.2_call.dat";
@@ -160,7 +156,6 @@ int main (int argc, char *argv[]){
 
    datafile = "../../data/stats_3.1.2_put.dat";
    blocked_stats(put_ave, put_av2, N, datafile);
-
 
    rnd.SaveSeed();
    return 0;

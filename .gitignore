@@ -1,7 +1,10 @@
 # jupyter
 .ipynb_checkpoints
+
+# Sublime Text
 *.sublime-workspace
 *.sublime-project
+
 *.py
 
 # Data

@@ -52,6 +52,8 @@ int main (int argc, char *argv[]){
    }
    cout << endl;
 
+/*===========================================================================*/
+
    // 1.1.1 First Integral
 
    int M = 100000; // Rolls
@@ -135,6 +137,8 @@ int main (int argc, char *argv[]){
 
    statsfile.close();
 
+/*===========================================================================*/
+
    // 1.2 Testing the Central Limit Theorem
 
    // rnd.SetRandom(seed,p1,p2);
@@ -174,6 +178,8 @@ int main (int argc, char *argv[]){
       statsfile << endl;
    }
    statsfile.close();
+
+/*===========================================================================*/
 
    // 1.3 Buffon Experiment
 
