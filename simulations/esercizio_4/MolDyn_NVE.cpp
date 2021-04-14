@@ -15,7 +15,7 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 
 using namespace std;
 
-int main(){ 
+int main(){
   Input();             //Inizialization
   int nconf = 1;
   for(int istep=1; istep <= nstep; ++istep){
@@ -23,7 +23,7 @@ int main(){
      if(istep%iprint == 0) cout << "Number of time-steps: " << istep << endl;
      if(istep%10 == 0){
         Measure();     //Properties measurement
-//        ConfXYZ(nconf);//Write actual configuration in XYZ format //Commented to avoid "filesystem full"! 
+//        ConfXYZ(nconf); //Write actual configuration in XYZ format //Commented to avoid "filesystem full"!
         nconf += 1;
      }
   }
@@ -44,7 +44,7 @@ void Input(void){ //Prepare all stuff for the simulation
 
   seed = 1;    //Set seed for random numbers
   srand(seed); //Initialize random number generator
-  
+
   ReadInput.open("input.dat"); //Read input
 
   ReadInput >> temp;
@@ -110,7 +110,7 @@ void Input(void){ //Prepare all stuff for the simulation
    }
    sumv2 /= (double)npart;
 
-   fs = sqrt(3 * temp / sumv2);   // fs = velocity scale factor 
+   fs = sqrt(3 * temp / sumv2);   // fs = velocity scale factor
    for (int i=0; i<npart; ++i){
      vx[i] *= fs;
      vy[i] *= fs;
@@ -172,7 +172,7 @@ double Force(int ip, int idir){ //Compute forces as -Grad_ip V(r)
       }
     }
   }
-  
+
   return f;
 }
 
@@ -207,12 +207,12 @@ void Measure(){ //Properties measurement
 //Potential energy
        v += vij;
      }
-    }          
+    }
   }
 
 //Kinetic energy
   for (int i=0; i<npart; ++i) t += 0.5 * (vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);
-   
+
     stima_pot = v/(double)npart; //Potential energy per particle
     stima_kin = t/(double)npart; //Kinetic energy per particle
     stima_temp = (2.0 / 3.0) * t/(double)npart; //Temperature

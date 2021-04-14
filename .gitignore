@@ -5,7 +5,9 @@
 *.sublime-workspace
 *.sublime-project
 
+# Scripts
 *.py
+*.sh
 
 # Data
 *.dat

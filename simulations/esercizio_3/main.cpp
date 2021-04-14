@@ -55,7 +55,6 @@ int main (int argc, char *argv[]){
    }
    cout << endl;
 
-
 /*===========================================================================*/
 
    // Params
@@ -72,7 +71,6 @@ int main (int argc, char *argv[]){
    cout << "== Black-Scholes ==" << endl;
    cout << "Call Price: " << call_option(S,T,K,sigma,r) << endl;
    cout << "Put Price: " << put_option(S,T,K,sigma,r) << endl;
-
 
 /*===========================================================================*/
 
