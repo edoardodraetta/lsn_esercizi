@@ -10,7 +10,7 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 //parameters, observables
 const int m_props=4;
 int n_props;
-int iv,ik,it,ie;
+int iv,ik,it,ie; // indices for each observable
 double stima_pot, stima_kin, stima_etot, stima_temp;
 
 // averages
@@ -28,10 +28,12 @@ double energy,temp,vol,rho,box,rcut;
 // simulation
 int nstep, iprint, seed;
 double delta;
+bool restart;
 
 //functions
 void Input(void);
 void Move(void);
+void ConfOut(std::string);
 void ConfFinal(void);
 void ConfXYZ(int);
 void Measure(void);

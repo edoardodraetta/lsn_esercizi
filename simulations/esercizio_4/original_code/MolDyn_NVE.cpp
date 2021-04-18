@@ -19,22 +19,23 @@ int main(){
   Input();             //Inizialization
   int nconf = 1;
   for(int istep=1; istep <= nstep; ++istep){
-     Move();           //Move particles with Verlet algorithm
-     if(istep%iprint == 0) cout << "Number of time-steps: " << istep << endl;
-     if(istep%10 == 0){
-        Measure();     //Properties measurement
-//        ConfXYZ(nconf); //Write actual configuration in XYZ format //Commented to avoid "filesystem full"!
-        nconf += 1;
-     }
+    Move();           //Move particles with Verlet algorithm
+    if(istep%iprint == 0) cout << "Number of time-steps: " << istep << endl;
+    if(istep%10 == 0){
+      Measure();     //Properties measurement
+      // ConfXYZ(nconf); //Write actual configuration in XYZ format //Commented to avoid "filesystem full"!
+      nconf += 1;
+    }
+    if(istep == nstep-1) ConfOut("old.0");
+    if(istep == nstep) ConfOut("old.final");
   }
-  ConfFinal();         //Write final configuration to restart
+  ConfFinal();         // Write final configuration to restart
 
   return 0;
 }
 
-
 void Input(void){ //Prepare all stuff for the simulation
-  ifstream ReadInput,ReadConf;
+  ifstream ReadInput, ReadConf;
   double ep, ek, pr, et, vir;
 
   cout << "Classic Lennard-Jones fluid        " << endl;
@@ -63,10 +64,12 @@ void Input(void){ //Prepare all stuff for the simulation
   ReadInput >> delta;
   ReadInput >> nstep;
   ReadInput >> iprint;
+  ReadInput >> restart; // 4.1.1
 
   cout << "The program integrates Newton equations with the Verlet method " << endl;
   cout << "Time step = " << delta << endl;
   cout << "Number of steps = " << nstep << endl << endl;
+
   ReadInput.close();
 
 //Prepare array for measurements
@@ -76,53 +79,92 @@ void Input(void){ //Prepare all stuff for the simulation
   it = 3; //Temperature
   n_props = 4; //Number of observables
 
-//Read initial configuration
-  cout << "Read initial configuration from file config.0 " << endl << endl;
-  ReadConf.open("config.0");
-  for (int i=0; i<npart; ++i){
-    ReadConf >> x[i] >> y[i] >> z[i];
-    x[i] = x[i] * box;
-    y[i] = y[i] * box;
-    z[i] = z[i] * box;
-  }
-  ReadConf.close();
+// 4.1.1 if restarting, then this should be different.
 
 //Prepare initial velocities
-   cout << "Prepare random velocities with center of mass velocity equal to zero " << endl << endl;
-   double sumv[3] = {0.0, 0.0, 0.0};
-   for (int i=0; i<npart; ++i){
-     vx[i] = rand()/double(RAND_MAX) - 0.5;
-     vy[i] = rand()/double(RAND_MAX) - 0.5;
-     vz[i] = rand()/double(RAND_MAX) - 0.5;
 
-     sumv[0] += vx[i];
-     sumv[1] += vy[i];
-     sumv[2] += vz[i];
-   }
-   for (int idim=0; idim<3; ++idim) sumv[idim] /= (double)npart;
-   double sumv2 = 0.0, fs;
-   for (int i=0; i<npart; ++i){
-     vx[i] = vx[i] - sumv[0];
-     vy[i] = vy[i] - sumv[1];
-     vz[i] = vz[i] - sumv[2];
+  if (restart==1){ // 4.1.1
+    cout << endl << "=== Restarting from previous configuration === " << endl << endl;
 
-     sumv2 += vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i];
-   }
-   sumv2 /= (double)npart;
+    ReadConf.open("old.final"); // final time
+    for (int i=0; i<npart; ++i){
+      ReadConf >> x[i] >> y[i] >> z[i];
+      x[i] = x[i] * box; // LJ reduced units
+      y[i] = y[i] * box;
+      z[i] = z[i] * box;
+    }
+    ReadConf.close();
 
-   fs = sqrt(3 * temp / sumv2);   // fs = velocity scale factor
-   for (int i=0; i<npart; ++i){
-     vx[i] *= fs;
-     vy[i] *= fs;
-     vz[i] *= fs;
+    ReadConf.open("old.0"); // final time - 1
+    for (int i=0; i<npart; ++i){
+      ReadConf >> xold[i] >> yold[i] >> zold[i];
+      xold[i] = xold[i] * box; // LJ reduced units
+      yold[i] = yold[i] * box;
+      zold[i] = zold[i] * box;
+    }
+    ReadConf.close();
 
-     xold[i] = Pbc(x[i] - vx[i] * delta);
-     yold[i] = Pbc(y[i] - vy[i] * delta);
-     zold[i] = Pbc(z[i] - vz[i] * delta);
-   }
-   return;
+    // Check
+    cout << "Configuration of particle 1 at initial time: " << endl;
+    cout << x[0] << " " << y[0] << " " << " " << z[0] << endl;
+    cout << "Configuration of particle 1 at initial time minus delta t: " << endl;
+    cout << xold[0] << " " << yold[0] << " " << " " << zold[0] << endl << endl;
+
+    // Get velocites for current time
+    Move();
+    // check
+    cout << "Configuration of particle one after initializing" << endl;
+    cout << x[0] << " " << y[0] << " " << z[0] << endl;
+    cout << "Velocity of particle one after initializing" << endl;
+    cout << vx[0] << " " << vy[0] << " " << vz[0] << endl << endl;
+
+  } else {
+    cout << endl << "=== Starting from single configuration file  === " << endl << endl;
+
+    //Read initial configuration
+    cout << "Read initial configuration from file config.0 " << endl << endl;
+    ReadConf.open("config.0");
+    for (int i=0; i<npart; ++i){
+      ReadConf >> x[i] >> y[i] >> z[i];
+      x[i] = x[i] * box; // LJ reduced units
+      y[i] = y[i] * box;
+      z[i] = z[i] * box;
+    }
+    ReadConf.close();
+
+    cout << "Prepare random velocities with center of mass velocity equal to zero " << endl << endl;
+    double sumv[3] = {0.0, 0.0, 0.0};
+    for (int i=0; i<npart; ++i){
+      vx[i] = rand()/double(RAND_MAX) - 0.5;
+      vy[i] = rand()/double(RAND_MAX) - 0.5;
+      vz[i] = rand()/double(RAND_MAX) - 0.5;
+
+      sumv[0] += vx[i];
+      sumv[1] += vy[i];
+      sumv[2] += vz[i];
+    }
+    for (int idim=0; idim<3; ++idim) sumv[idim] /= (double)npart;
+    double sumv2 = 0.0, fs;
+    for (int i=0; i<npart; ++i){
+      vx[i] = vx[i] - sumv[0];
+      vy[i] = vy[i] - sumv[1];
+      vz[i] = vz[i] - sumv[2];
+      sumv2 += vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i];
+    }
+    sumv2 /= (double)npart;
+    fs = sqrt(3 * temp / sumv2);   // fs = velocity scale factor
+    for (int i=0; i<npart; ++i){
+      vx[i] *= fs;
+      vy[i] *= fs;
+      vz[i] *= fs;
+
+      xold[i] = Pbc(x[i] - vx[i] * delta);
+      yold[i] = Pbc(y[i] - vy[i] * delta);
+      zold[i] = Pbc(z[i] - vz[i] * delta);
+    }
+  }
+  return;
 }
-
 
 void Move(void){ //Move particles with Verlet algorithm
   double xnew, ynew, znew, fx[m_part], fy[m_part], fz[m_part];
@@ -231,6 +273,18 @@ void Measure(){ //Properties measurement
     return;
 }
 
+void ConfOut(string filename){ //Write final configuration
+  ofstream WriteConf;
+
+  cout << "Print configuration to file " << filename << endl;
+  WriteConf.open(filename);
+
+  for (int i=0; i<npart; ++i){
+    WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
+  }
+  WriteConf.close();
+  return;
+}
 
 void ConfFinal(void){ //Write final configuration
   ofstream WriteConf;

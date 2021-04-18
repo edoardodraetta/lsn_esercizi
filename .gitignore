@@ -12,6 +12,7 @@
 # Data
 *.dat
 *.png
+*.xyz
 
 # Prerequisites
 *.d
