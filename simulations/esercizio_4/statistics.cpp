@@ -28,7 +28,7 @@ void blocked_stats(vector<double>  &AV, vector<double>  &AV2, int N, string file
    outfile.close();
 }
 
-float error(vector<double> AV, vector<double> AV2, int n){
+double error(vector<double> AV, vector<double> AV2, int n){
    if (n == 0){
       return 0;
    } else {

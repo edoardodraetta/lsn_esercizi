@@ -72,33 +72,6 @@ void MolDyn::Input(){ // Prepare all stuff for the simulation
 
 /*===========================================================================*/
 
-void MolDyn::BlockedStats(){
-	string datafile;
-	int L = nstep/nblocks;
-	ofstream OutFile();
-
-	OutFile.open("ave_epot.out");
-	for (int i = 0; i < nblocks; i++){
-		Outfile << ave_epot[i] << " " << av2_epot[i] << " " << err_epot[i] << endl;
-	}
-	OutFile.close();
-	OutFile.open("ave_ekin.out");
-	for (int i = 0; i < nblocks; i++){
-		Outfile << ave_ekin[i] << " " << av2_ekin[i] << " " << err_ekin[i] << endl;
-	}
-	OutFile.close();
-	OutFile.open("ave_etot.out");
-	for (int i = 0; i < nblocks; i++){
-		Outfile << ave_etot[i] << " " << av2_etot[i] << " " << err_etot[i] << endl;
-	}
-	OutFile.close();
-	OutFile.open("ave_temp.out");
-	for (int i = 0; i < nblocks; i++){
-		Outfile << ave_temp[i] << " " << av2_temp[i] << " " << err_temp[i] << endl;
-	}
-	OutFile.close();
-}
-
 void MolDyn::Rescale(){
    cout << "=== Rescaling temperature for quick equilibration === " << endl << endl;
 
@@ -165,30 +138,31 @@ void MolDyn::Rescale(){
 }
 
 void MolDyn::Restart(){ // 4.1.1
-   cout << "=== Restarting from previous configuration === " << endl << endl;
-   ifstream ReadConf;
-   ReadConf.open("config.final"); // final config
-   for (int i=0; i<npart; ++i){
-      ReadConf >> x[i] >> y[i] >> z[i];
-      x[i] = x[i] * box; // LJ reduced units
-      y[i] = y[i] * box;
-      z[i] = z[i] * box;
-   }
-   ReadConf.close();
-   ReadConf.open("old.0"); // penultimate config
-   for (int i=0; i<npart; ++i){
-	   ReadConf >> xold[i] >> yold[i] >> zold[i];
-	   xold[i] = xold[i] * box; // LJ reduced units
-	   yold[i] = yold[i] * box;
-	   zold[i] = zold[i] * box;
-   }
-   ReadConf.close();
+	cout << "=== Restarting from previous configuration === " << endl << endl;
+	ifstream ReadConf;
+	ReadConf.open("config.final"); // final config
+	for (int i=0; i<npart; ++i){
+		ReadConf >> x[i] >> y[i] >> z[i];
+		x[i] = x[i] * box; // LJ reduced units
+		y[i] = y[i] * box;
+		z[i] = z[i] * box;
+	}
+	ReadConf.close();
+	ReadConf.open("old.0"); // penultimate config
+	for (int i=0; i<npart; ++i){
+	 ReadConf >> xold[i] >> yold[i] >> zold[i];
+	 xold[i] = xold[i] * box; // LJ reduced units
+	 yold[i] = yold[i] * box;
+	 zold[i] = zold[i] * box;
+  }
+
+  ReadConf.close();
 
 	// DEBUG()
-	cout << "Configuration of particle 1 at initial time: " << endl;
-	cout << x[0] << " " << y[0] << " "  << z[0] << endl;
-	cout << "Configuration of particle 1 at initial time minus delta t: " << endl;
-	cout << xold[0] << " " << yold[0] << " " << zold[0] << endl << endl;
+	// cout << "Configuration of particle 1 at initial time: " << endl;
+	// cout << x[0] << " " << y[0] << " "  << z[0] << endl;
+	// cout << "Configuration of particle 1 at initial time minus delta t: " << endl;
+	// cout << xold[0] << " " << yold[0] << " " << zold[0] << endl << endl;
 }
 
 void MolDyn::PrepareVelocities(){
@@ -199,10 +173,10 @@ void MolDyn::PrepareVelocities(){
    cout << "- Read initial configuration from file config.0 " << endl << endl;
    ReadConf.open("config.0");
    for (int i=0; i<npart; ++i){
-   	ReadConf >> x[i] >> y[i] >> z[i];
+	ReadConf >> x[i] >> y[i] >> z[i];
 		x[i] = x[i] * box; // LJ reduced units
-      y[i] = y[i] * box;
-      z[i] = z[i] * box;
+	  y[i] = y[i] * box;
+	  z[i] = z[i] * box;
    }
    ReadConf.close();
 	cout << "- Prepare random velocities with center of mass velocity equal to zero ";
@@ -243,7 +217,7 @@ void MolDyn::ConfOut(string filename){ //Write final configuration
   WriteConf.open(filename);
 
   for (int i=0; i<npart; ++i){
-    WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
+	WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
   }
   WriteConf.close();
   return;
@@ -286,18 +260,18 @@ double MolDyn::Force(int ip, int idir){ // Compute forces as -Grad_ip V(r)
   double dvec[3], dr;
 
   for (int i=0; i<npart; ++i){
-    if(i != ip){
-      dvec[0] = Pbc( x[ip] - x[i] );  // distance ip-i in pbc
-      dvec[1] = Pbc( y[ip] - y[i] );
-      dvec[2] = Pbc( z[ip] - z[i] );
+	if(i != ip){
+	  dvec[0] = Pbc( x[ip] - x[i] );  // distance ip-i in pbc
+	  dvec[1] = Pbc( y[ip] - y[i] );
+	  dvec[2] = Pbc( z[ip] - z[i] );
 
-      dr = dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2];
-      dr = sqrt(dr);
+	  dr = dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2];
+	  dr = sqrt(dr);
 
-      if(dr < rcut){
-        f += dvec[idir] * (48.0/pow(dr,14) - 24.0/pow(dr,8)); // -Grad_ip V(r)
-      }
-    }
+	  if(dr < rcut){
+		f += dvec[idir] * (48.0/pow(dr,14) - 24.0/pow(dr,8)); // -Grad_ip V(r)
+	  }
+	}
   }
 
   return f;
@@ -319,26 +293,26 @@ void MolDyn::Measure(){ //Properties measurement
 
 	// cycle over pairs of particles
 	for (int i=0; i<npart-1; ++i){
-   	for (int j=i+1; j<npart; ++j){
+	for (int j=i+1; j<npart; ++j){
 
-	     dx = Pbc( xold[i] - xold[j] ); // here I use old configurations [old = r(t)]
-	     dy = Pbc( yold[i] - yold[j] ); // to be compatible with EKin which uses v(t)
-	     dz = Pbc( zold[i] - zold[j] ); // => EPot should be computed with r(t)
+		 dx = Pbc( xold[i] - xold[j] ); // here I use old configurations [old = r(t)]
+		 dy = Pbc( yold[i] - yold[j] ); // to be compatible with EKin which uses v(t)
+		 dz = Pbc( zold[i] - zold[j] ); // => EPot should be computed with r(t)
 
-	     dr = dx*dx + dy*dy + dz*dz;
-	     dr = sqrt(dr);
+		 dr = dx*dx + dy*dy + dz*dz;
+		 dr = sqrt(dr);
 
-	     if(dr < rcut){
-	      	vij = 4.0/pow(dr,12) - 4.0/pow(dr,6);
+		 if(dr < rcut){
+			vij = 4.0/pow(dr,12) - 4.0/pow(dr,6);
 
-		      // Potential energy
-		      v += vij;
-     		}
-   	}
+			  // Potential energy
+			  v += vij;
+			}
+	}
 	}
 
 	// Kinetic energy
-  	for (int i=0; i<npart; ++i) t += 0.5 * (vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);
+	for (int i=0; i<npart; ++i) t += 0.5 * (vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);
 
 	stima_pot = v/(double)npart; // Potential energy per particle
 	stima_kin = t/(double)npart; // Kinetic energy per particle
@@ -365,7 +339,7 @@ void MolDyn::ConfFinal(){ //Write final configuration
   WriteConf.open("config.final");
 
   for (int i=0; i<npart; ++i){
-    WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
+	WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
   }
   WriteConf.close();
   return;
@@ -378,11 +352,11 @@ void MolDyn::ConfXYZ(int nconf){ //Write configuration in .xyz format
   WriteXYZ << npart << endl;
   WriteXYZ << "This is only a comment!" << endl;
   for (int i=0; i<npart; ++i){
-    WriteXYZ << "LJ  " << Pbc(x[i]) << "   " <<  Pbc(y[i]) << "   " << Pbc(z[i]) << endl;
+	WriteXYZ << "LJ  " << Pbc(x[i]) << "   " <<  Pbc(y[i]) << "   " << Pbc(z[i]) << endl;
   }
   WriteXYZ.close();
 }
 
 double MolDyn::Pbc(double r){  //Algorithm for periodic boundary conditions with side L=box
-    return r - box * rint(r/box);
+	return r - box * rint(r/box);
 }

@@ -8,7 +8,6 @@ private:
 	const int m_props = 4;
 	int n_props;
 	int iv, ik, it, ie; // indices for each observable
-	double stima_pot, stima_kin, stima_etot, stima_temp;
 
 	// averages
 	double acc,att;
@@ -36,6 +35,7 @@ public:
 	~MolDyn();
 
 	int nstep, iprint;
+	double stima_pot, stima_kin, stima_etot, stima_temp;
 
 	void Input();
 	void Move();
@@ -54,10 +54,6 @@ public:
 
 	// blocked stats
 	static const int nblocks = 100;
-	double ave_epot[nblocks], ave_ekin[nblocks], ave_etot[nblocks], ave_temp[nblocks];
- 	double av2_epot[nblocks], av2_ekin[nblocks], av2_etot[nblocks], av2_temp[nblocks];
- 	double err_epot[nblocks], err_ekin[nblocks], err_etot[nblocks], err_temp[nblocks];
- 	void BlockedStats();
 };
 
 #endif
