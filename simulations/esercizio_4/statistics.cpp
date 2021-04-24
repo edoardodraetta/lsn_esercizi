@@ -7,7 +7,7 @@ using namespace std;
 
 #include "statistics.h"
 
-void blocked_stats(vector<double>  &AV, vector<double>  &AV2, int N, string filename){
+void blocked_stats(double AV[], double AV2[], int N, string filename){
    ofstream outfile;
    outfile.open(filename);
 

@@ -1,82 +1,188 @@
-#include <cstdlib>
-#include <string>
 #include <iostream>
 #include <fstream>
+#include <string>
 
+#include "statistics.h"
 #include "MolDyn.h"
 
 using namespace std;
 
-MolDyn::MolDyn(){}
+MolDyn::MolDyn(string input){
 
-MolDyn::~MolDyn(){}
-
-void MolDyn::Input(){ // Prepare all stuff for the simulation
 	ifstream ReadInput;
-	// double ep, ek, pr, et, vir;
-
-	// === MESSAGE ===
-	cout << "Classic Lennard-Jones fluid        " << endl;
-	cout << "Molecular dynamics simulation in NVE ensemble  " << endl << endl;
-	cout << "Interatomic potential v(r) = 4 * [(1/r)^12 - (1/r)^6]" << endl << endl;
-	cout << "The program uses Lennard-Jones units " << endl;
-
-	seed = 1;    // Set seed for random numbers
 	srand(seed); // Initialize random number generator
 
 	// === PARAMS ===
-	ReadInput.open("input.dat"); // Read input
+	inputfile = input;
+	ReadInput.open(inputfile); // Read input
 
 	ReadInput >> temp;
-
 	ReadInput >> npart;
-	cout << "Number of particles = " << npart << endl;
-
 	ReadInput >> rho;
-	cout << "Density of particles = " << rho << endl;
 	vol = (double)npart/rho;
-	cout << "Volume of the simulation box = " << vol << endl;
 	box = pow(vol,1.0/3.0);
-	cout << "Edge of the simulation box = " << box << endl;
 
 	ReadInput >> rcut;
 	ReadInput >> delta;
 	ReadInput >> nstep;
 	ReadInput >> iprint;
-	ReadInput >> restart; // 4.1.1
-	ReadInput >> quick_rescale; // 4.1.2
+	ReadInput >> restart; // new
+	ReadInput >> quick_rescale; // new
+
+	ReadInput.close();
+
+	// === MESSAGE ===
+	Welcome();
+
+	// === INITIALIZE ===
+
+	Initialize();
+}
+
+MolDyn::~MolDyn(){}
+
+void MolDyn::Welcome(){
+	cout << "Classic Lennard-Jones fluid        " << endl;
+	cout << "Molecular dynamics simulation in NVE ensemble  " << endl << endl;
+	cout << "Interatomic potential v(r) = 4 * [(1/r)^12 - (1/r)^6]" << endl << endl;
+	cout << "The program uses Lennard-Jones units " << endl;
+
+	cout << "Number of particles = " << npart << endl;
+	cout << "Density of particles = " << rho << endl;
+	cout << "Volume of the simulation box = " << vol << endl;
+	cout << "Edge of the simulation box = " << box << endl;
 
 	cout << "The program integrates Newton equations with the Verlet method " << endl;
 	cout << "Time step = " << delta << endl;
 	cout << "Number of steps = " << nstep << endl << endl;
-	cout << "Number of blocks = " << nblocks << endl << endl;
 
-	ReadInput.close();
+	cout << "(Read simulation parameters from " << inputfile << ".)" << endl << endl;
 
-	// Prepare array for measurements
-	iv = 0; //Potential energy
-	ik = 1; //Kinetic energy
-	ie = 2; //Total energy
-	it = 3; //Temperature
-	n_props = 4; //Number of observables
+	// cout << "Checking intialization of some data members: " << endl;
+	// cout << iv << " " << ik << " " << ie << " " << it << " " << n_props << endl << endl;
 
-	// === INITIALIZE ===
-
-	if (restart==1){
-		Restart();
-		if (quick_rescale==1) Rescale(); // Fast equilibration
-	} else PrepareVelocities();
-
-	return;
 }
 
-/*===========================================================================*/
+/*=======================Simulation Methods==================================*/
+
+void MolDyn::Simulate(){
+
+	cout << "=== Simulating ===" << endl << endl;
+
+
+	int nconf = 1;
+	int iblock = 0;
+	int L = nstep / nblocks;
+	for(int istep=1; istep <= nstep; ++istep){
+
+		Move(); // Verlet
+
+		if(istep%iprint == 0) { // Report progress
+			cout << "Number of time-steps: " << istep << endl;
+		}
+
+		// Measure observables and write current config.xyz
+	  if(istep%10 == 0){
+      // Measure();
+      // ConfXYZ(nconf);
+      nconf += 1;
+	  }
+
+	  // Measurement for blocked Statistics
+
+	  Measure();
+		ave_etot[iblock] += stima_etot;
+		ave_epot[iblock] += stima_pot;
+		ave_ekin[iblock] += stima_kin;
+		ave_temp[iblock] += stima_temp;
+
+		if(istep%L ==0) iblock += 1;
+
+	  // Print penultimate configuration
+	  if(istep == nstep-1) {
+	  	ConfOut("old.penult");
+	  }
+	  if(istep == nstep) {
+	  	ConfOut("old.final");
+		}
+	}
+
+	// Compute averages and square averages
+	for (int i = 0; i < nblocks; i++){
+		ave_etot[i] /= L;
+		av2_etot[i] = ave_etot[i] * ave_etot[i];
+
+		ave_epot[i] /= L;
+		av2_epot[i] = ave_epot[i] * ave_epot[i];
+
+		ave_ekin[i] /= L;
+		av2_ekin[i] = ave_ekin[i] * ave_ekin[i];
+
+		ave_temp[i] /= L;
+		av2_temp[i] = ave_temp[i] * ave_temp[i];
+	}
+}
+
+void MolDyn::PrintStats(){
+	string datafile;
+
+ 	datafile  = "./data/ave_etot.out";
+ 	blocked_stats(ave_etot, av2_etot, nblocks, datafile);
+
+	datafile = "./data/ave_epot.out";
+ 	blocked_stats(ave_epot, av2_epot, nblocks, datafile);
+
+ 	datafile = "./data/ave_ekin.out";
+ 	blocked_stats(ave_ekin, av2_ekin, nblocks, datafile);
+
+ 	datafile = "./data/ave_temp.out";
+ 	blocked_stats(ave_temp, av2_temp, nblocks, datafile);
+}
+
+/*=======================Initialization Methods==============================*/
+
+void MolDyn::Initialize(){
+	// restart = 1 --> restart from previous configuration
+	// rescale = 1 --> rescale velocities to match temperature
+	if (restart==1){
+		Restart();
+		if (quick_rescale==1){
+			Rescale();
+		}
+	} else{
+		PrepareVelocities();
+	}
+}
+
+void MolDyn::Restart(){
+
+	cout << "=== Restarting from previous configuration === " << endl << endl;
+	ifstream ReadConf;
+	ReadConf.open("old.final"); // final config
+	for (int i=0; i<npart; ++i){
+		ReadConf >> x[i] >> y[i] >> z[i];
+		x[i] = x[i] * box; // LJ reduced units
+		y[i] = y[i] * box;
+		z[i] = z[i] * box;
+	}
+	ReadConf.close();
+	ReadConf.open("old.penult"); // penultimate config
+	for (int i=0; i<npart; ++i){
+	 ReadConf >> xold[i] >> yold[i] >> zold[i];
+	 xold[i] = xold[i] * box; // LJ reduced units
+	 yold[i] = yold[i] * box;
+	 zold[i] = zold[i] * box;
+  }
+  ReadConf.close();
+
+}
 
 void MolDyn::Rescale(){
-   cout << "=== Rescaling temperature for quick equilibration === " << endl << endl;
 
-   double xnew, ynew, znew, fx[m_part], fy[m_part], fz[m_part];
+	double xnew, ynew, znew, fx[m_part], fy[m_part], fz[m_part];
 	double sumv2 = 0, fs;
+
+	cout << "=== Rescaling temperature for quick equilibration === " << endl << endl;
 
 	for(int i=0; i<npart; ++i){ // Force acting on particle i
 		fx[i] = Force(i,0);
@@ -105,8 +211,6 @@ void MolDyn::Rescale(){
 		z[i] = znew;
 	}
 
-	cout << "RESCALE: Velocities of particle 1 before rescaling : " << endl;
-	cout << "(" << vx[0] << ", " << vy[0] << ", " << vz[0] << ")" << endl;
 	sumv2 /= (double) npart;
 	fs = sqrt(3*temp / sumv2); // T2/T1
 
@@ -134,52 +238,24 @@ void MolDyn::Rescale(){
 	sumv2 /= (double) npart;
 
 	cout << "RESCALE: Check measured temp after rescaling : ";
-	cout << sumv2/3. << endl; ;
-}
-
-void MolDyn::Restart(){ // 4.1.1
-	cout << "=== Restarting from previous configuration === " << endl << endl;
-	ifstream ReadConf;
-	ReadConf.open("config.final"); // final config
-	for (int i=0; i<npart; ++i){
-		ReadConf >> x[i] >> y[i] >> z[i];
-		x[i] = x[i] * box; // LJ reduced units
-		y[i] = y[i] * box;
-		z[i] = z[i] * box;
-	}
-	ReadConf.close();
-	ReadConf.open("old.0"); // penultimate config
-	for (int i=0; i<npart; ++i){
-	 ReadConf >> xold[i] >> yold[i] >> zold[i];
-	 xold[i] = xold[i] * box; // LJ reduced units
-	 yold[i] = yold[i] * box;
-	 zold[i] = zold[i] * box;
-  }
-
-  ReadConf.close();
-
-	// DEBUG()
-	// cout << "Configuration of particle 1 at initial time: " << endl;
-	// cout << x[0] << " " << y[0] << " "  << z[0] << endl;
-	// cout << "Configuration of particle 1 at initial time minus delta t: " << endl;
-	// cout << xold[0] << " " << yold[0] << " " << zold[0] << endl << endl;
+	cout << sumv2/3. << endl << endl;
 }
 
 void MolDyn::PrepareVelocities(){
-
 	cout << "=== Starting from single configuration file  === " << endl << endl;
 	ifstream ReadConf;
-   // Read initial configuration
-   cout << "- Read initial configuration from file config.0 " << endl << endl;
-   ReadConf.open("config.0");
-   for (int i=0; i<npart; ++i){
-	ReadConf >> x[i] >> y[i] >> z[i];
+
+  cout << "Read initial configuration from file config.0 " << endl << endl;
+  ReadConf.open("config.0");
+  for (int i=0; i<npart; ++i){
+		ReadConf >> x[i] >> y[i] >> z[i];
 		x[i] = x[i] * box; // LJ reduced units
 	  y[i] = y[i] * box;
 	  z[i] = z[i] * box;
-   }
-   ReadConf.close();
-	cout << "- Prepare random velocities with center of mass velocity equal to zero ";
+  }
+  ReadConf.close();
+
+	cout << "Prepare random velocities with center of mass velocity equal to zero ";
 	cout << endl << endl;
 	double sumv[3] = {0.0, 0.0, 0.0};
 	for (int i=0; i<npart; ++i){
@@ -197,10 +273,10 @@ void MolDyn::PrepareVelocities(){
 		vy[i] = vy[i] - sumv[1];
 		vz[i] = vz[i] - sumv[2];
 		sumv2 += vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i];
-   }
-   sumv2 /= (double)npart;
-   fs = sqrt(3 * temp / sumv2);   // fs = velocity scale factor T2 / T1
-   for (int i=0; i<npart; ++i){
+  }
+  sumv2 /= (double)npart;
+  fs = sqrt(3 * temp / sumv2);   // fs = velocity scale factor T2 / T1
+  for (int i=0; i<npart; ++i){
 		vx[i] *= fs;
 		vy[i] *= fs;
 		vz[i] *= fs;
@@ -210,20 +286,7 @@ void MolDyn::PrepareVelocities(){
 	}
 }
 
-void MolDyn::ConfOut(string filename){ //Write final configuration
-  ofstream WriteConf;
-
-  // cout << "Print configuration to file " << filename << endl;
-  WriteConf.open(filename);
-
-  for (int i=0; i<npart; ++i){
-	WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
-  }
-  WriteConf.close();
-  return;
-}
-
-/*===========================================================================*/
+/*==========================Physics Methods==================================*/
 
 void MolDyn::Move(){ // Move particles with Verlet algorithm
 	double xnew, ynew, znew, fx[m_part], fy[m_part], fz[m_part];
@@ -254,29 +317,6 @@ void MolDyn::Move(){ // Move particles with Verlet algorithm
 	}
 	return;
 }
-
-double MolDyn::Force(int ip, int idir){ // Compute forces as -Grad_ip V(r)
-  double f=0.0;
-  double dvec[3], dr;
-
-  for (int i=0; i<npart; ++i){
-	if(i != ip){
-	  dvec[0] = Pbc( x[ip] - x[i] );  // distance ip-i in pbc
-	  dvec[1] = Pbc( y[ip] - y[i] );
-	  dvec[2] = Pbc( z[ip] - z[i] );
-
-	  dr = dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2];
-	  dr = sqrt(dr);
-
-	  if(dr < rcut){
-		f += dvec[idir] * (48.0/pow(dr,14) - 24.0/pow(dr,8)); // -Grad_ip V(r)
-	  }
-	}
-  }
-
-  return f;
-}
-
 void MolDyn::Measure(){ //Properties measurement
 	int bin;
 	double v, t, vij;
@@ -294,7 +334,6 @@ void MolDyn::Measure(){ //Properties measurement
 	// cycle over pairs of particles
 	for (int i=0; i<npart-1; ++i){
 	for (int j=i+1; j<npart; ++j){
-
 		 dx = Pbc( xold[i] - xold[j] ); // here I use old configurations [old = r(t)]
 		 dy = Pbc( yold[i] - yold[j] ); // to be compatible with EKin which uses v(t)
 		 dz = Pbc( zold[i] - zold[j] ); // => EPot should be computed with r(t)
@@ -328,15 +367,54 @@ void MolDyn::Measure(){ //Properties measurement
 	Ekin.close();
 	Temp.close();
 	Etot.close();
-
-   return;
 }
+
+double MolDyn::Force(int ip, int idir){ // Compute forces as -Grad_ip V(r)
+  double f=0.0;
+  double dvec[3], dr;
+
+  for (int i=0; i<npart; ++i){
+		if(i != ip){
+		  dvec[0] = Pbc( x[ip] - x[i] );  // distance ip-i in pbc
+		  dvec[1] = Pbc( y[ip] - y[i] );
+		  dvec[2] = Pbc( z[ip] - z[i] );
+
+		  dr = dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2];
+		  dr = sqrt(dr);
+
+		  if(dr < rcut){
+				f += dvec[idir] * (48.0/pow(dr,14) - 24.0/pow(dr,8)); // -Grad_ip V(r)
+		  }
+		}
+  }
+  return f;
+}
+
+double MolDyn::Pbc(double r){  //Algorithm for periodic boundary conditions with side L=box
+	return r - box * rint(r/box);
+}
+
+/*=======================Configuration Methods===============================*/
+
+void MolDyn::ConfOut(string filename){ //Write final configuration
+  ofstream WriteConf;
+
+  // cout << "Print configuration to file " << filename << endl;
+  WriteConf.open(filename);
+
+  for (int i=0; i<npart; ++i){
+	WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
+  }
+  WriteConf.close();
+  return;
+}
+
 
 void MolDyn::ConfFinal(){ //Write final configuration
   ofstream WriteConf;
 
   cout << "Print final configuration to file config.final " << endl << endl;
-  WriteConf.open("config.final");
+  WriteConf.open("old.final");
 
   for (int i=0; i<npart; ++i){
 	WriteConf << x[i]/box << "   " <<  y[i]/box << "   " << z[i]/box << endl;
@@ -355,8 +433,4 @@ void MolDyn::ConfXYZ(int nconf){ //Write configuration in .xyz format
 	WriteXYZ << "LJ  " << Pbc(x[i]) << "   " <<  Pbc(y[i]) << "   " << Pbc(z[i]) << endl;
   }
   WriteXYZ.close();
-}
-
-double MolDyn::Pbc(double r){  //Algorithm for periodic boundary conditions with side L=box
-	return r - box * rint(r/box);
 }
