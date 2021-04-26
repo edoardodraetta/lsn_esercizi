@@ -16,10 +16,8 @@ Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will r
 
 ### Exercise 4
 
-- [x] make MolDyn into a class b/c it makes more sense to me that way
-- [x] rilancio
-- [ ] blocked stats -> should probably happen in main? [ check end goal (ex 3)]
-- [ ] rename penultimate file
+- [x] code is correct, restart simply needs to happen multiple times
+- [ ] probably needs to be trimmed to minal file needs...
 
 
 
