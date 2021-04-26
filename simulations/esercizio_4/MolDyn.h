@@ -7,7 +7,7 @@ public:
 	~MolDyn();
 
 	void Simulate();
-	void PrintStats();
+	void PrintStats(std::string datadir = "../../data");
 
 private:
 

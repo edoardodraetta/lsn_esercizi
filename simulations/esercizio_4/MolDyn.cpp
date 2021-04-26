@@ -35,7 +35,6 @@ MolDyn::MolDyn(string input){
 	Welcome();
 
 	// === INITIALIZE ===
-
 	Initialize();
 }
 
@@ -47,6 +46,7 @@ void MolDyn::Welcome(){
 	cout << "Interatomic potential v(r) = 4 * [(1/r)^12 - (1/r)^6]" << endl << endl;
 	cout << "The program uses Lennard-Jones units " << endl;
 
+	cout << "Simulation parameters from " << inputfile << "" << endl;
 	cout << "Number of particles = " << npart << endl;
 	cout << "Density of particles = " << rho << endl;
 	cout << "Volume of the simulation box = " << vol << endl;
@@ -55,12 +55,6 @@ void MolDyn::Welcome(){
 	cout << "The program integrates Newton equations with the Verlet method " << endl;
 	cout << "Time step = " << delta << endl;
 	cout << "Number of steps = " << nstep << endl << endl;
-
-	cout << "(Read simulation parameters from " << inputfile << ".)" << endl << endl;
-
-	// cout << "Checking intialization of some data members: " << endl;
-	// cout << iv << " " << ik << " " << ie << " " << it << " " << n_props << endl << endl;
-
 }
 
 /*=======================Simulation Methods==================================*/
@@ -69,14 +63,12 @@ void MolDyn::Simulate(){
 
 	cout << "=== Simulating ===" << endl << endl;
 
-
 	int nconf = 1;
 	int iblock = 0;
 	int L = nstep / nblocks;
+
 	for(int istep=1; istep <= nstep; ++istep){
-
 		Move(); // Verlet
-
 		if(istep%iprint == 0) { // Report progress
 			cout << "Number of time-steps: " << istep << endl;
 		}
@@ -89,13 +81,11 @@ void MolDyn::Simulate(){
 	  }
 
 	  // Measurement for blocked Statistics
-
 	  Measure();
 		ave_etot[iblock] += stima_etot;
 		ave_epot[iblock] += stima_pot;
 		ave_ekin[iblock] += stima_kin;
 		ave_temp[iblock] += stima_temp;
-
 		if(istep%L ==0) iblock += 1;
 
 	  // Print penultimate configuration
@@ -123,19 +113,19 @@ void MolDyn::Simulate(){
 	}
 }
 
-void MolDyn::PrintStats(){
+void MolDyn::PrintStats(string datadir){
 	string datafile;
 
- 	datafile  = "./data/ave_etot.out";
+ 	datafile = datadir + "/ave_etot.out";
  	blocked_stats(ave_etot, av2_etot, nblocks, datafile);
 
-	datafile = "./data/ave_epot.out";
+	datafile = datadir + "/ave_epot.out";
  	blocked_stats(ave_epot, av2_epot, nblocks, datafile);
 
- 	datafile = "./data/ave_ekin.out";
+ 	datafile = datadir + "/ave_ekin.out";
  	blocked_stats(ave_ekin, av2_ekin, nblocks, datafile);
 
- 	datafile = "./data/ave_temp.out";
+ 	datafile = datadir + "/ave_temp.out";
  	blocked_stats(ave_temp, av2_temp, nblocks, datafile);
 }
 
@@ -155,7 +145,6 @@ void MolDyn::Initialize(){
 }
 
 void MolDyn::Restart(){
-
 	cout << "=== Restarting from previous configuration === " << endl << endl;
 	ifstream ReadConf;
 	ReadConf.open("old.final"); // final config
@@ -178,10 +167,8 @@ void MolDyn::Restart(){
 }
 
 void MolDyn::Rescale(){
-
 	double xnew, ynew, znew, fx[m_part], fy[m_part], fz[m_part];
 	double sumv2 = 0, fs;
-
 	cout << "=== Rescaling temperature for quick equilibration === " << endl << endl;
 
 	for(int i=0; i<npart; ++i){ // Force acting on particle i
@@ -236,9 +223,6 @@ void MolDyn::Rescale(){
 		sumv2 += vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i];
 	}
 	sumv2 /= (double) npart;
-
-	cout << "RESCALE: Check measured temp after rescaling : ";
-	cout << sumv2/3. << endl << endl;
 }
 
 void MolDyn::PrepareVelocities(){
@@ -408,7 +392,6 @@ void MolDyn::ConfOut(string filename){ //Write final configuration
   WriteConf.close();
   return;
 }
-
 
 void MolDyn::ConfFinal(){ //Write final configuration
   ofstream WriteConf;

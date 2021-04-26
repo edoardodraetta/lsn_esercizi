@@ -5,9 +5,13 @@ using namespace std;
 
 int main(){
 
-	MolDyn MD;
+	// MolDyn MD("./input/Ar.solid");
+	// MD.Simulate();
+	// MD.PrintStats("../../data/solidphase");
+
+	MolDyn MD("./input/Ar.solid");
 	MD.Simulate();
-	MD.PrintStats();
+	MD.PrintStats("../../data/4.3.1");
 	return 0;
 
 }

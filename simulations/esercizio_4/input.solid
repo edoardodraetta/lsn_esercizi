@@ -1,14 +1,12 @@
-1.4
+0.8
 108
 1.1
 2.2
 0.0005
 10000
 1000
-100
 1
-0
-
+1
 
   ReadInput >> temp;
   ReadInput >> npart;
@@ -20,3 +18,4 @@
   ReadInput >> restart;
   ReadInput >> quick_rescale;
 
+Input file for Argon solid phase
