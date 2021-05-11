@@ -1,9 +1,10 @@
-0.8
+1.4
 108
 1.1
 2.2
 0.0005
 10000
+100
 1000
 1
 1
@@ -14,8 +15,7 @@
   ReadInput >> rcut;
   ReadInput >> delta;
   ReadInput >> nstep;
+  ReadInput >> nblocks;
   ReadInput >> iprint;
   ReadInput >> restart;
-  ReadInput >> quick_rescale;
-
-Input file for Argon solid phase
+  ReadInput >> rescale;

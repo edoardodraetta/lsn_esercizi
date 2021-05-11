@@ -1,16 +1,10 @@
-CXX = g++
-CXXFLAGS = -Wall -O3 --std=c++11
-LDFLAGS =
+CC = g++
+CFLAGS = -Wall -O3 --std=c++11
 
-objects =  MolDyn.o main.o statistics.o
+MolDyn_NVE.exe : MolDyn_NVE.o
+	$(CC) MolDyn_NVE.o -o MolDyn_NVE.exe
+MolDyn_NVE.o : MolDyn_NVE.cpp
+	$(CC) -c MolDyn_NVE.cpp -o MolDyn_NVE.o $(CFLAGS)
 
-main.exe : $(objects)
-	$(CXX) $(objects) -o main.exe
-
-main.o : MolDyn.h statistics.h
-MolDyn.o : MolDyn.cpp
-
-
-.PHONY : clean
 clean :
-	rm *.o main.exe
+	rm *.o MolDyn_NVE.exe

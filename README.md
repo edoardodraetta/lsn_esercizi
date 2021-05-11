@@ -18,13 +18,24 @@ Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will r
 
 ### Exercise 4
 
-- [x] code is correct, restart simply needs to happen multiple times
-- [ ] probably needs to be trimmed to minal file needs...
+- [x] Move velocity preparation to function `Prepare()`
+- [x] Implement velocity rescale as `Rescale()`
+- [x] Implement control flow for velocities
+- [x] print penultimate config at end of simulation
+- [x] implement restarting as `Restart()`
+- [ ] accumulate with `Accumulate()`
+- [ ] complete and print avereage with `Average()`
+- [ ] make `quick_plot.py` into reporting for temperature equilibration
+
+- [ ] execute solid phase simulation
+- [ ] liquid phase simulation
+- [ ] gas phase simulation
+- [ ] write report describing experiment parameters and procedure
 
 ### Exercise 5
 
 - [x] proof of concept
 - [ ] compute <r> in one block
 - [ ] compute <r> in multiple blocks
-- [ ] implement gaussian transition probability
+- [ ] implement gaussian transition probability for each coordinate
 
