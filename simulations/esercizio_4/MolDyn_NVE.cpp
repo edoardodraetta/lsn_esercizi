@@ -12,6 +12,7 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 #include <fstream>      // Stream class to both read and write from/to files.
 #include <cmath>        // rint, pow
 #include <string>
+#include <vector>
 #include "MolDyn_NVE.h"
 
 using namespace std;
@@ -19,36 +20,55 @@ using namespace std;
 int main(){
   Input(); // Inizialization
   int nconf = 1;
-  for (int iblock = 0; iblock < nblocks; ++iblock){
+  for (int iblock = 1; iblock <= nblocks; ++iblock){
+    ZeroAverages();
+    if(iblock%10 == 0) cout << "Block: " << iblock << endl;
+
     for(int istep=1; istep <= nstep; ++istep){
       Move(); // Move particles with Verlet algorithm
 
-      if(istep%iprint == 0) {
-        cout << "Number of time-steps: " << istep << endl;
-      }
+      // if(istep%(iprint) == 0) {
+      //   cout << "Bl, Ts : " << iblock << ", " << istep << endl;
+      // }
 
-      if(istep%10 == 0){
-        Measure();     //Properties measurement
-        // Write actual configuration in XYZ format:
+      if(istep%10 == 0){ // Write actual configuration in XYZ format:
         // ConfXYZ(nconf); // Commented to avoid "filesystem full"!
         nconf += 1;
       }
 
-      if(istep==nstep-1) ConfPenult();
+      Measure(); // properties
+      Accumulate(); // accumulate to compute averages
+
+      if((istep==nstep-1)&&(iblock==nblocks)) ConfPenult();
     }
+    ComputeAverages(iblock); // compute and output
   }
   ConfFinal(); // Write final configuration to restart
   return 0;
 }
 
-void Input(void){ //Prepare all stuff for the simulation
-  ifstream ReadInput,ReadConf;
-  double ep, ek, pr, et, vir;
-
+void Welcome(){ // prints welcome message
   cout << "Classic Lennard-Jones fluid        " << endl;
   cout << "Molecular dynamics simulation in NVE ensemble  " << endl << endl;
   cout << "Interatomic potential v(r) = 4 * [(1/r)^12 - (1/r)^6]" << endl << endl;
   cout << "The program uses Lennard-Jones units " << endl;
+
+  cout << "Number of particles = " << npart << endl;
+  cout << "Density of particles = " << rho << endl;
+  cout << "Volume of the simulation box = " << vol << endl;
+  cout << "Edge of the simulation box = " << box << endl;
+  cout << "The program integrates Newton equations with the Verlet method " << endl;
+  cout << "Time step = " << delta << endl;
+  cout << "Number of steps = " << nstep << endl;
+  cout << "Number of blocks = " << nblocks << endl;
+  cout << "Restart = " << restart << endl;
+  cout << "Rescale = " << rescale << endl;
+  cout << endl;
+}
+
+void Input(){ //Prepare all stuff for the simulation
+  ifstream ReadInput,ReadConf;
+  double ep, ek, pr, et, vir;
 
   seed = 1;    //Set seed for random numbers
   srand(seed); //Initialize random number generator
@@ -57,14 +77,7 @@ void Input(void){ //Prepare all stuff for the simulation
 
   ReadInput >> temp;
   ReadInput >> npart;
-  cout << "Number of particles = " << npart << endl;
   ReadInput >> rho;
-  cout << "Density of particles = " << rho << endl;
-  vol = (double)npart/rho;
-  cout << "Volume of the simulation box = " << vol << endl;
-  box = pow(vol,1.0/3.0);
-  cout << "Edge of the simulation box = " << box << endl;
-
   ReadInput >> rcut;
   ReadInput >> delta;
   ReadInput >> nstep;
@@ -73,10 +86,11 @@ void Input(void){ //Prepare all stuff for the simulation
   ReadInput >> restart;
   ReadInput >> rescale;
 
-  cout << "The program integrates Newton equations with the Verlet method " << endl;
-  cout << "Time step = " << delta << endl;
-  cout << "Number of steps = " << nstep << endl << endl;
+  vol = (double)npart/rho;
+  box = pow(vol,1.0/3.0);
+
   ReadInput.close();
+  Welcome(); // Welcome message
 
   // Prepare array for measurements
   iv = 0; //Potential energy
@@ -85,17 +99,6 @@ void Input(void){ //Prepare all stuff for the simulation
   it = 3; //Temperature
   n_props = 4; //Number of observables
 
-  // Read initial configuration
-  cout << "Read initial configuration from file config.0 " << endl << endl;
-  ReadConf.open("config.0");
-  for (int i=0; i<npart; ++i){
-    ReadConf >> x[i] >> y[i] >> z[i];
-    x[i] = x[i] * box;
-    y[i] = y[i] * box;
-    z[i] = z[i] * box;
-  }
-  ReadConf.close();
-
   // Restart or rescale?
   if (restart==1) {
     Restart();
@@ -103,13 +106,87 @@ void Input(void){ //Prepare all stuff for the simulation
       Rescale();
     }
   } else {
+    cout << "Read initial configuration from file config.0 " << endl << endl;
+    ReadConf.open("config.0");
+    for (int i=0; i<npart; ++i){
+      ReadConf >> x[i] >> y[i] >> z[i];
+      x[i] = x[i] * box;
+      y[i] = y[i] * box;
+      z[i] = z[i] * box;
+    }
+    ReadConf.close();
     Prepare();
   }
-
-  return;
 }
 
 /*========================NEW FUNCTIONS======================================*/
+
+void Accumulate(){
+  block_avg[iv] += stima_pot;
+  block_avg[ik] += stima_kin;
+  block_avg[it] += stima_temp;
+  block_avg[ie] += stima_etot;
+}
+
+void ZeroAverages(){
+  block_avg[iv] = 0;
+  block_avg[ik] = 0;
+  block_avg[it] = 0;
+  block_avg[ie] = 0;
+}
+
+void ComputeAverages(int iblock){
+  int j = iblock-1;
+
+  ave_pot[j] = block_avg[iv] / nstep;
+  av2_pot[j] = ave_pot[j] * ave_pot[j];
+
+  ave_kin[j] = block_avg[ik] / nstep;
+  av2_kin[j] = ave_kin[j] * ave_kin[j];
+
+  ave_temp[j] = block_avg[it] / nstep;
+  av2_temp[j] = ave_temp[j] * ave_temp[j];
+
+  ave_etot[j] = block_avg[ie] / nstep;
+  av2_etot[j] = ave_etot[j] * ave_etot[j];
+
+  if (iblock==nblocks){
+    cout << "Computing blocked statistics." << endl;
+    BlockedStats("./avg_epot.out", ave_pot, av2_pot, nblocks);
+    BlockedStats("./avg_ekin.out", ave_kin, av2_kin, nblocks);
+    BlockedStats("./avg_temp.out", ave_temp, av2_temp, nblocks);
+    BlockedStats("./avg_etot.out", ave_etot, av2_etot, nblocks);
+  }
+}
+
+void BlockedStats(string filename, double AV[], double AV2[], int N){
+  ofstream outFile;
+  outFile.open(filename);
+
+  vector<double> sum(N,0);
+  vector<double> sum2(N,0);
+  vector<double> err(N,0);
+
+  for (int i=0; i<N; i++){
+    for (int j=0; j<(i+1); j++){
+      sum[i] += AV[j]; // cumulative sum of averages
+      sum2[i] += AV2[j]; // sum of square averages
+    }
+    sum[i] /= (i+1); // cumulative average
+    sum2[i] /= (i+1); // cumulative square average
+    err[i] = Error(sum, sum2, i); // uncertainty
+    outFile << sum[i] << " " << sum2[i] << " " << err[i] << endl;
+  }
+  outFile.close();
+}
+
+double Error(vector<double> AV, vector<double> AV2, int n){
+  if (n == 0){
+    return 0;
+  } else {
+    return sqrt( (AV2[n] - AV[n] * AV[n]) / n);
+  }
+}
 
 void Restart(void){
   cout << "Restarting from previous configuration. " << endl << endl;
@@ -223,7 +300,7 @@ void Prepare(void){
 void ConfPenult(void){ //Write final configuration
   ofstream WriteConf;
 
-  cout << "Print penultimate configuration to file old.penult " << endl;
+  // cout << "Print penultimate configuration to file old.penult " << endl;
   WriteConf.open("old.penult");
 
   for (int i=0; i<npart; ++i){

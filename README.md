@@ -23,14 +23,13 @@ Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will r
 - [x] Implement control flow for velocities
 - [x] print penultimate config at end of simulation
 - [x] implement restarting as `Restart()`
-- [ ] accumulate with `Accumulate()`
-- [ ] complete and print avereage with `Average()`
-- [ ] make `quick_plot.py` into reporting for temperature equilibration
-
-- [ ] execute solid phase simulation
-- [ ] liquid phase simulation
-- [ ] gas phase simulation
-- [ ] write report describing experiment parameters and procedure
+- [x] accumulate with `Accumulate()`
+- [x] complete and print avereage with `Average()`
+- [x] make `quick_plot.py` into reporting for temperature equilibration
+- [x] solid phase simulation
+- [x] liquid phase simulation
+- [x] gas phase simulation
+- [x] write report describing experiment parameters and procedure
 
 ### Exercise 5
 
@@ -38,4 +37,12 @@ Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will r
 - [ ] compute <r> in one block
 - [ ] compute <r> in multiple blocks
 - [ ] implement gaussian transition probability for each coordinate
+
+### Exercise 6
+
+### Exercise 7
+
+### Exercise 8
+
+
 

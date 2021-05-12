@@ -42,17 +42,25 @@ double Pbc(double);
 void Prepare();
 void Rescale();
 void Restart();
+void Accumulate();
+void ZeroAverages();
+void ComputeAverages(int);
+void BlockedStats(std::string, double [], double [], int);
+double Error(std::vector<double>, std::vector<double>, int);
+
 void ConfPenult(void);
 void Accumulate(void);
 void ConfOut(std::string);
-void Average(void);
-double Error(double, double, int);
 
 // new params
+const int m_blocks = 100;
 int nblocks;
-// double blocked_average[n_props];
-double err_pot, err_kin, err_etot, err_temp;
 bool restart, rescale;
+double block_avg[m_props];
+double ave_pot[m_blocks], av2_pot[m_blocks];
+double ave_kin[m_blocks], av2_kin[m_blocks];
+double ave_temp[m_blocks], av2_temp[m_blocks];
+double ave_etot[m_blocks], av2_etot[m_blocks];
 
 /****************************************************************
 *****************************************************************
