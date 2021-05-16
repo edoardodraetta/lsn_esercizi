@@ -29,14 +29,17 @@ Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will r
 - [x] solid phase simulation
 - [x] liquid phase simulation
 - [x] gas phase simulation
-- [x] write report describing experiment parameters and procedure
+- [ ] produce plots in SI units
+- [ ] write report describing experiment parameters and procedure
 
 ### Exercise 5
 
 - [x] proof of concept
-- [ ] compute <r> in one block
-- [ ] compute <r> in multiple blocks
+- [x] compute <r> in one block
+- [x] compute <r> in multiple blocks
+- [x] excited state
 - [ ] implement gaussian transition probability for each coordinate
+- [ ] plot and report
 
 ### Exercise 6
 

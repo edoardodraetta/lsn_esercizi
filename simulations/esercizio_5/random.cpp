@@ -39,8 +39,6 @@ void Random :: RanUniform3d(double R, double r[3]){
   r[2] += R * cos(phi);
 }
 
-
-
 double Random :: RanTheta(){
   double x,y,r,theta;
   x = Rannyu(-1,1);
