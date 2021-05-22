@@ -42,6 +42,10 @@ Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will r
 - [ ] plot and report
 
 ### Exercise 6
+- [x] functional code
+- [ ] how to export?
+- [ ] produce plots
+- [ ] produce report
 
 ### Exercise 7
 
