@@ -6,30 +6,24 @@ LSN exercise delivery.
 - [ ] trim superfluous modules from programs
 - [ ] update c++ style in old programs
 
-### Instructions
-
-Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will run all simulations for the given exercise.
-
 ### Exercise 1
+- [ ] How many chi-squared tests should i run?
+- [ ] Can i use theoretical values for fitting a normal distribution?
+- [ ] Is my lorentz fit a true fit?
 
 ### Exercise 2
+- [ ] Is my importance sampling correct? US better than IS??
+- [ ] Is my error too large? it seems proportional to the avg...
+- [ ] fit looks weird
 
 ### Exercise 3
+- [ ] review report
 
 ### Exercise 4
 
-- [x] Move velocity preparation to function `Prepare()`
-- [x] Implement velocity rescale as `Rescale()`
-- [x] Implement control flow for velocities
-- [x] print penultimate config at end of simulation
-- [x] implement restarting as `Restart()`
-- [x] accumulate with `Accumulate()`
-- [x] complete and print avereage with `Average()`
-- [x] make `quick_plot.py` into reporting for temperature equilibration
-- [x] solid phase simulation
-- [x] liquid phase simulation
-- [x] gas phase simulation
-- [ ] produce plots in SI units
+- [ ] liquid phase sim
+- [ ] gas phase sim
+- [ ] SI units energy and temperature
 - [ ] write report describing experiment parameters and procedure
 
 ### Exercise 5
@@ -48,7 +42,7 @@ Run `make` in `./simulations/esercizio_x` to generate a `main.exe`, which will r
 - [ ] produce report
 
 ### Exercise 7
-
+- [ ] print out instantaneous values for solid, liquid, gas
 ### Exercise 8
 
 
