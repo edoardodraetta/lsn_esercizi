@@ -108,10 +108,10 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   string datafile = "../../data/stats_3.1.1_call.dat";
+   string datafile = "../../data/3/direct_call.dat";
    blocked_stats(call_ave, call_av2, N, datafile);
 
-   datafile = "../../data/stats_3.1.1_put.dat";
+   datafile = "../../data/3/direct_put.dat";
    blocked_stats(put_ave, put_av2, N, datafile);
 
    // 3.1.2 - Path Sampling of GBM
@@ -149,10 +149,10 @@ int main (int argc, char *argv[]){
 
    // Statistics
 
-   datafile = "../../data/stats_3.1.2_call.dat";
+   datafile = "../../data/3/path_call.dat";
    blocked_stats(call_ave, call_av2, N, datafile);
 
-   datafile = "../../data/stats_3.1.2_put.dat";
+   datafile = "../../data/3/path_put.dat";
    blocked_stats(put_ave, put_av2, N, datafile);
 
    rnd.SaveSeed();

@@ -74,7 +74,7 @@ int main (int argc, char *argv[]){
 
   // Cumulative blocked statistics
 
-  string datafile = "../../data/stats_1.1.1.dat";
+  string datafile = "../../data/1/first_integral.dat";
   blocked_stats(ave, av2, N, datafile);
 
   // 1.1.2 Second Integral
@@ -97,7 +97,7 @@ int main (int argc, char *argv[]){
 
   // Statistics
 
-  datafile = "../../data/stats_1.1.2.dat";
+  datafile = "../../data/1/second_integral.dat";
   blocked_stats(ave, av2, N, datafile);
 
   // 1.1.3 Chi Squared Test
@@ -113,7 +113,7 @@ int main (int argc, char *argv[]){
   double chi_squared;
 
   ofstream statsfile;
-  statsfile.open("../../data/stats_1.1.3.dat");
+  statsfile.open("../../data/1/chi_squared.dat");
 
   for (int k = 0; k < M; k++ ){       // iterations of chi^2 test
     chi_squared = 0;
@@ -148,7 +148,7 @@ int main (int argc, char *argv[]){
 
   // Uniform Distribtution
 
-  statsfile.open("../../data/stats_1.2.1.dat");
+  statsfile.open("../../data/1/clt_uniform.dat");
   for (int i = 0; i < n_sums; i++){
     for (int j = 0; j < sums.size(); j++){
       statsfile << rnd.sum_uniform(sums[j],0,1) << " ";
@@ -159,7 +159,7 @@ int main (int argc, char *argv[]){
 
   // Exponential Distribtution
 
-  statsfile.open("../../data/stats_1.2.2.dat");
+  statsfile.open("../../data/1/clt_exponential.dat");
   for (int i = 0; i < n_sums; i++){
     for (int j = 0; j < sums.size(); j++){
       statsfile << rnd.sum_exponential(sums[j],1) << " ";
@@ -170,7 +170,7 @@ int main (int argc, char *argv[]){
 
   // Lorentzian Distribtution
 
-  statsfile.open("../../data/stats_1.2.3.dat");
+  statsfile.open("../../data/1/clt_lorentzian.dat");
   for (int i = 0; i < n_sums; i++){
     for (int j = 0; j < sums.size(); j++){
       statsfile << rnd.sum_lorentzian(sums[j],0,1) << " ";
@@ -215,7 +215,7 @@ int main (int argc, char *argv[]){
 
   // Statistics
 
-  datafile = "../../data/stats_1.3.dat";
+  datafile = "../../data/1/buffon.dat";
   blocked_stats(pi_estimate, pi2_estimate, N, datafile);
 
   rnd.SaveSeed();
