@@ -12,9 +12,13 @@ const int m_props=4;
 int n_props;
 int iv,ik,it,ie;
 double stima_pot, stima_kin, stima_etot, stima_temp;
+double avg_pot, avg_kin, avg_etot, avg_temp;
+double err_pot, err_kin, err_etot, err_temp;
 
 // averages
 double acc,att;
+double blk_av[m_props], blk_norm;
+double glob_av[m_props],glob_av2[m_props];
 
 //configuration
 const int m_part=108;
@@ -26,41 +30,38 @@ int npart;
 double energy,temp,vol,rho,box,rcut;
 
 // simulation
-int nstep, iprint, seed;
+int nstep, iprint, seed, nblocks;
 double delta;
+bool restart, rescale;
 
-//functions
+// functions
 void Input(void);
 void Move(void);
-void ConfFinal(void);
-void ConfXYZ(int);
 void Measure(void);
 double Force(int, int);
 double Pbc(double);
 
-// new functions
+// begin
 void Prepare();
 void Rescale();
 void Restart();
-void Accumulate();
-void ZeroAverages();
-void ComputeAverages(int);
-void BlockedStats(std::string, double [], double [], int);
-double Error(std::vector<double>, std::vector<double>, int);
 
-void ConfPenult(void);
+// medie di blocco
+void Reset(int);
 void Accumulate(void);
-void ConfOut(std::string);
+void Averages(int);
 
-// new params
-const int m_blocks = 100;
-int nblocks;
-bool restart, rescale;
-double block_avg[m_props];
-double ave_pot[m_blocks], av2_pot[m_blocks];
-double ave_kin[m_blocks], av2_kin[m_blocks];
-double ave_temp[m_blocks], av2_temp[m_blocks];
-double ave_etot[m_blocks], av2_etot[m_blocks];
+// stats
+double Error(double, double, int);
+
+// conf
+void ConfFinal(void);
+void ConfPenult(void);
+void ConfOut(std::string);
+void ConfXYZ(int);
+
+
+
 
 /****************************************************************
 *****************************************************************

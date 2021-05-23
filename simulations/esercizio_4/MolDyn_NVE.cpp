@@ -21,27 +21,21 @@ int main(){
   Input(); // Inizialization
   int nconf = 1;
   for (int iblock = 1; iblock <= nblocks; ++iblock){
-    ZeroAverages();
-    if(iblock%10 == 0) cout << "Block: " << iblock << endl;
-
+    Reset(iblock);
     for(int istep=1; istep <= nstep; ++istep){
       Move(); // Move particles with Verlet algorithm
 
-      // if(istep%(iprint) == 0) {
-      //   cout << "Bl, Ts : " << iblock << ", " << istep << endl;
-      // }
-
-      if(istep%10 == 0){ // Write actual configuration in XYZ format:
+      if(istep%iprint == 0){ // Write actual configuration in XYZ format:
         // ConfXYZ(nconf); // Commented to avoid "filesystem full"!
+
+        Measure();    // properties
+        Accumulate(); // accumulate to compute averages
         nconf += 1;
       }
 
-      Measure(); // properties
-      Accumulate(); // accumulate to compute averages
-
       if((istep==nstep-1)&&(iblock==nblocks)) ConfPenult();
     }
-    ComputeAverages(iblock); // compute and output
+    Averages(iblock); // compute and output
   }
   ConfFinal(); // Write final configuration to restart
   return 0;
@@ -119,74 +113,90 @@ void Input(){ //Prepare all stuff for the simulation
   }
 }
 
-/*========================NEW FUNCTIONS======================================*/
+/*========================MEDIE DI BLOCCO====================================*/
+
+void Reset(int iblock){ // zero averages
+  if (iblock==1){
+    for (int i = 0; i < n_props; ++i){
+      glob_av[i] = 0;
+      glob_av2[i] = 0;
+    }
+  }
+  for (int i = 0; i < n_props; ++i){
+    blk_av[i] = 0;
+  }
+  blk_norm = 0;
+}
 
 void Accumulate(){
-  block_avg[iv] += stima_pot;
-  block_avg[ik] += stima_kin;
-  block_avg[it] += stima_temp;
-  block_avg[ie] += stima_etot;
+  blk_av[iv] += stima_pot;
+  blk_av[ik] += stima_kin;
+  blk_av[it] += stima_temp;
+  blk_av[ie] += stima_etot;
+  blk_norm += 1.0;
 }
 
-void ZeroAverages(){
-  block_avg[iv] = 0;
-  block_avg[ik] = 0;
-  block_avg[it] = 0;
-  block_avg[ie] = 0;
+void Averages(int iblock){ // compute averages
+  ofstream pot, kin, etot, temp, press, g;
+  double e, v, k, t;
+
+  cout << "Block number : " << iblock << endl;
+
+  pot.open("./output.ave_epot.dat",ios::app);
+  avg_pot = blk_av[iv]/blk_norm;
+
+  glob_av[iv] += avg_pot;
+  glob_av2[iv] += avg_pot*avg_pot;
+  err_pot = Error(glob_av[iv], glob_av2[iv], iblock);
+  v = glob_av[iv]/(double)iblock;
+  pot << iblock << " " << v << " " << err_pot << endl;
+  pot.close();
+
+  kin.open("./output.ave_ekin.dat",ios::app);
+  avg_kin = blk_av[ik]/blk_norm;
+  glob_av[ik] += avg_kin;
+  glob_av2[ik] += avg_kin*avg_kin;
+  err_kin = Error(glob_av[ik], glob_av2[ik], iblock);
+  k = glob_av[ik]/(double)iblock;
+  kin << iblock << " " << k << " " << err_kin << endl;
+  kin.close();
+
+  etot.open("./output.ave_etot.dat",ios::app);
+  avg_etot = blk_av[ie]/blk_norm;
+  glob_av[ie] += avg_etot;
+  glob_av2[ie] += avg_etot*avg_etot;
+  err_etot = Error(glob_av[ie], glob_av2[ie], iblock);
+  e = glob_av[ie]/(double)iblock;
+  etot << iblock << " " << e << " " << err_etot << endl;
+  etot.close();
+
+  temp.open("./output.ave_temp.dat",ios::app);
+  avg_temp = blk_av[it]/blk_norm;
+  glob_av[it] += avg_temp;
+  glob_av2[it] += avg_temp*avg_temp;
+  err_temp = Error(glob_av[it], glob_av2[it], iblock);
+  t = glob_av[it]/(double)iblock;
+  temp << iblock << " " << t << " " << err_temp << endl;
+  temp.close();
+
+  cout << "T(t): " << stima_temp << endl;
+  cout << "<T>: " << t << endl;
+  cout << "KE : " << k << endl;
+  cout << "PE : " << v << endl;
+  cout << "E : "  << e << endl;
+
+  cout << endl << endl;
 }
 
-void ComputeAverages(int iblock){
-  int j = iblock-1;
-
-  ave_pot[j] = block_avg[iv] / nstep;
-  av2_pot[j] = ave_pot[j] * ave_pot[j];
-
-  ave_kin[j] = block_avg[ik] / nstep;
-  av2_kin[j] = ave_kin[j] * ave_kin[j];
-
-  ave_temp[j] = block_avg[it] / nstep;
-  av2_temp[j] = ave_temp[j] * ave_temp[j];
-
-  ave_etot[j] = block_avg[ie] / nstep;
-  av2_etot[j] = ave_etot[j] * ave_etot[j];
-
-  if (iblock==nblocks){
-    cout << "Computing blocked statistics." << endl;
-    BlockedStats("./avg_epot.out", ave_pot, av2_pot, nblocks);
-    BlockedStats("./avg_ekin.out", ave_kin, av2_kin, nblocks);
-    BlockedStats("./avg_temp.out", ave_temp, av2_temp, nblocks);
-    BlockedStats("./avg_etot.out", ave_etot, av2_etot, nblocks);
-  }
-}
-
-void BlockedStats(string filename, double AV[], double AV2[], int N){
-  ofstream outFile;
-  outFile.open(filename);
-
-  vector<double> sum(N,0);
-  vector<double> sum2(N,0);
-  vector<double> err(N,0);
-
-  for (int i=0; i<N; i++){
-    for (int j=0; j<(i+1); j++){
-      sum[i] += AV[j]; // cumulative sum of averages
-      sum2[i] += AV2[j]; // sum of square averages
-    }
-    sum[i] /= (i+1); // cumulative average
-    sum2[i] /= (i+1); // cumulative square average
-    err[i] = Error(sum, sum2, i); // uncertainty
-    outFile << sum[i] << " " << sum2[i] << " " << err[i] << endl;
-  }
-  outFile.close();
-}
-
-double Error(vector<double> AV, vector<double> AV2, int n){
-  if (n == 0){
+double Error(double AV, double AV2, int N){
+  if (N == 1){
     return 0;
   } else {
-    return sqrt( (AV2[n] - AV[n] * AV[n]) / n);
+    return sqrt((AV2/(double)N - (AV/(double)N)*(AV/(double)N)) / (double)(N-1) );
   }
 }
+
+/*=========================EQUILIBRAZIONE=====================================*/
 
 void Restart(void){
   cout << "Restarting from previous configuration. " << endl << endl;
@@ -246,7 +256,7 @@ void Rescale(void){
 
   cout << "Desired temp: " << temp << endl;
   cout << "Computed temp: " << sumv2/3. << endl;
-  cout << "Rescaling factor: " << fs << endl;
+  cout << "Rescaling factor: " << fs << endl << endl;
 
   for (int i = 0; i < npart; ++i){
     // 3. Rescale velocities according to desired temperature
@@ -297,6 +307,8 @@ void Prepare(void){
   return;
 }
 
+/*===========================================================================*/
+
 void ConfPenult(void){ //Write final configuration
   ofstream WriteConf;
 
@@ -309,8 +321,6 @@ void ConfPenult(void){ //Write final configuration
   WriteConf.close();
   return;
 }
-
-/*========================OLD FUNCTIONS======================================*/
 
 void Move(void){ //Move particles with Verlet algorithm
   double xnew, ynew, znew, fx[m_part], fy[m_part], fz[m_part];

@@ -1,13 +1,13 @@
-0.8
+1.2
 108
-1.1
-2.2
+0.05
+5.0
 0.0005
 1000
 100
-10000
+1000
 1
-0
+1
 
   ReadInput >> temp;
   ReadInput >> npart;
@@ -20,4 +20,4 @@
   ReadInput >> restart;
   ReadInput >> rescale;
 
-Input file for Argon solid phase
+Input file for Argon gas phase
