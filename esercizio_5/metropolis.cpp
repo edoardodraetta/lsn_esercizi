@@ -129,7 +129,7 @@ void Move(){ // attempt move with Metropolis Algorithm
 	for (int j=0; j<3; j++) rold[j] = r[j];
 
   if (mode==0) rnd.RanUniform3d(dr, r); // Uniform Transition Matrix
-  if (mode==1) rnd.RanUniform3d(dr, r); // Gaussian Transition Matrix
+  if (mode==1) rnd.RanGaussian3d(dr, r); // Gaussian Transition Matrix
 
 	if (state==0) alpha = GroundState(r) / GroundState(rold); // Acceptance Rate
 	if (state==1) alpha = ExcitedState(r) / ExcitedState(rold);

@@ -1,0 +1,23 @@
+
+okay, here's what i'm thinking...
+
+
+- A path will be defined as an array of integers.
+- A path will be properly constrained according to the problem.
+
+N = [*1*, 2, 3, 4, 5, 6, ...]
+
+>> constraints
+
+	1) Each "address" appears exactly once
+	2) The first "address" will never change
+
+- An individual in my population will be represented by a realization of this path.
+
+How do I calculate my cost function?
+
+The cost function needs to know ahead of time the coordinates of each point in the path.
+
+>> idea:
+
+	Pass

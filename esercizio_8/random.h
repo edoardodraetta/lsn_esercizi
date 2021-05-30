@@ -8,50 +8,39 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 *****************************************************************
 *****************************************************************/
 
-#ifndef __ISING__
-#define __ISING__
+#ifndef __Random__
+#define __Random__
 
-//Random numbers
-#include "random.h"
-int seed[4];
-Random rnd;
+class Random {
 
-//parameters, observables
-const int m_props=1000;
-int n_props,iu,ic,im,ix,ig;
-double nbins;
-double walker[m_props];
+private:
+  int m1,m2,m3,m4,l1,l2,l3,l4,n1,n2,n3,n4;
 
-// averages
-double blk_av[m_props],blk_norm,accepted,attempted;
-double glob_av[m_props],glob_av2[m_props];
-double stima_u,stima_c,stima_m,stima_x,stima_g;
-double err_u,err_c,err_m,err_x,err_g;
+protected:
 
-//configuration
-const int m_spin=50;
-double s[m_spin];
+public:
+  // constructors
+  Random();
+  // destructor
+  ~Random();
+  // methods
+  void SetRandom(int * , int, int);
+  void SaveSeed();
+  double Rannyu(void);
+  double Rannyu(double min, double max);
+  double Gauss(double mean, double sigma);
 
-// thermodynamical state
-int nspin;
-double beta,temp,J,h;
+  // New (Trim?)
+  double Lorentzian(double mean, double gamma);
+  double Exponential(double lambda);
+  double RanTheta();
 
-// simulation
-int nstep, nblk, metro;
+  //
+  void RanUniform3d(double, double []);
 
-//functions
-void Input(void);
-void Reset(int);
-void Accumulate(void);
-void Averages(int);
-void Move(int);
-void ConfFinal(void);
-void Measure(void);
-double Boltzmann(int, int);
-int Pbc(int);
-double Error(double,double,int);
+};
 
-#endif
+#endif // __Random__
 
 /****************************************************************
 *****************************************************************

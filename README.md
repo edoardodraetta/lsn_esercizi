@@ -10,7 +10,7 @@ LSN exercise delivery.
 - [ ] How many chi-squared tests should i run?
 - [ ] Can i use theoretical values for fitting a normal distribution?
 - [ ] Is my lorentz fit a true fit?
-
+- [ ] RanTheta .... r or r^2 ?
 ### Exercise 2
 - [ ] Is my importance sampling correct? US better than IS??
 - [ ] Is my error too large? it seems proportional to the avg...
@@ -43,7 +43,10 @@ LSN exercise delivery.
 
 ### Exercise 7
 - [ ] print out instantaneous values for solid, liquid, gas
+
 ### Exercise 8
 
+### Exercise 9
+- [ ] make sure some safety is put into place for mutations
 
 
