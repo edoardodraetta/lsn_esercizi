@@ -1,7 +1,9 @@
 CXX = g++
-CXXFLAGS = -Wall -O2 --std=c++11
+CXXFLAGS = -Wall -O3 --std=c++11
 OBJS = random.o GeneticAlgorithm.o
 LDFLAGS = -larmadillo
+
+all : TSP.exe
 
 TSP.exe : $(OBJS)
 	$(CXX) $(OBJS) -o TSP.exe $(LDFLAGS)

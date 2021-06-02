@@ -1,0 +1,1 @@
+gm convert *.png -delay 25 -loop 0 -filter lanczos my_gif.gif

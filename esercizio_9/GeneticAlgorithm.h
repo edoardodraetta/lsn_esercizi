@@ -4,47 +4,65 @@
 #include "random.h"
 #include <armadillo>
 
-// Top level
-void Initialize(std::string filename = "input.dat");
-void Reset();
-void Rank();
-void Save();
-void Select();
-// void Crossover();
-void Mutate();
-void Report();
 
-// Mutation
-void Swap(int, int);
-void Shift(int, int, int, int);
-void Permute(int, int, int);
-void Invert(int, int, int);
-
-// Other
-void Welcome();
-
-void ReadInput(std::string);
-void Print(std::string);
-double Cost(int);
-int Pbc(int);
-void CitiesOnCircumference();
-
-
-// Parameters
+// RNG
 int seed[4];
 Random rnd;
 
-int n_cities, n_replicas, n_dim, n_generations;
+// optimization
+double timer, timer2, timer3, timer4;
+
+// Params
+int n_cities, n_replicas, n_generations;
+bool mode, report;
 
 // Data
-arma::umat population;
 arma::mat cities;
-arma::vec fitness;
-arma::uvec selection;
+arma::field<arma::urowvec>population;
+arma::field<arma::urowvec> oldpopulation;
 
-// Output
-arma::vec best_path;
-arma::vec avg_distance;
+// Init
+void Initialize();
+void ReadInput();
+void AllRandom();
+void Reset();
+
+// Fitness
+arma::rowvec fitness;
+arma::uvec selection;
+void Rank();
+double Cost(int);
+double Norm(int, int);
+
+// Reproduction
+arma::rowvec pdf;
+arma::rowvec cdf;
+void Select();
+void Crossover(int, int, int, int, int);
+
+// Mutation
+double p_mut;
+int mutations;
+void Mutate();
+void Swap(int, int, int);
+void Shift(int, int, int, int);
+void Permute(int, int, int);
+void Invert(int, int, int);
+void SwapAB(int, int, int);
+
+// Messages and Output
+arma::urowvec best_path;
+double blk_avg;
+double least_cost;
+void Welcome();
+void Report(int);
+void Save(int);
+void Check(int, std::string);
+
+// Other
+void CitiesOnCircumference();
+void CitiesInSquare();
+bool IsIn(const arma::urowvec &, int);
 
 // Constants
 const double pi=3.1415927;
