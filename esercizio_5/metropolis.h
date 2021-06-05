@@ -1,18 +1,25 @@
 
 #include "random.h"
 
+// Positions
 double r0[3];
-double rold[3], r[3]; // positions
+double rold[3], r[3];
+
+// Metropolis
 double alpha; // acceptance probability
 double dr; // size of step
-
-const int m_blocks = 100;
 int nsteps, nblocks;
 int accepted, attempted;
-double ave_pos[m_blocks], av2_pos[m_blocks];
 int iprint, imeasure;
+
+// Params
 bool state; // ground or excited state
 bool mode;
+
+// Observables
+double ave_pos, av2_pos;
+double glob_ave, glob_av2, err;
+double blk_norm;
 
 // RNG
 Random rnd;
@@ -31,6 +38,4 @@ void PrintPos(double []);
 double GroundState(double []);
 double ExcitedState(double []);
 double DistanceFormula(double []);
-
-void BlockedStats(std::string, double [], double [], int);
-double Error(std::vector<double>, std::vector<double>, int);
+double Error(double, double, int);

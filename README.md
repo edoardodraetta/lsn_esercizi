@@ -11,6 +11,7 @@ LSN exercise delivery.
 - [ ] Can i use theoretical values for fitting a normal distribution?
 - [ ] Is my lorentz fit a true fit?
 - [ ] RanTheta .... r or r^2 ?
+
 ### Exercise 2
 - [ ] Is my importance sampling correct? US better than IS??
 - [ ] Is my error too large? it seems proportional to the avg...
@@ -27,13 +28,11 @@ LSN exercise delivery.
 - [ ] write report describing experiment parameters and procedure
 
 ### Exercise 5
-
-- [x] proof of concept
-- [x] compute <r> in one block
-- [x] compute <r> in multiple blocks
-- [x] excited state
-- [ ] implement gaussian transition probability for each coordinate
-- [ ] plot and report
+- [x] Complete source code
+- [x] Produce results
+- [x] Produce report
+- [ ] Condense plots
+- [ ] Check for accuracy
 
 ### Exercise 6
 - [x] functional code
@@ -47,6 +46,7 @@ LSN exercise delivery.
 ### Exercise 8
 
 ### Exercise 9
-- [ ] make sure some safety is put into place for mutations
-
-
+- [ ] Complete source code
+- [ ] Produce results
+- [ ] Produce report
+- [ ] Check for accuracy

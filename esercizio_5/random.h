@@ -37,7 +37,6 @@ public:
 
   //
   void RanUniform3d(double, double []);
-
 };
 
 #endif // __Random__

@@ -5,6 +5,12 @@
 *.sublime-workspace
 *.sublime-project
 
+# VS Code
+.vscode
+
+# Clion
+.idea
+
 # Scripts
 *.py
 *.sh

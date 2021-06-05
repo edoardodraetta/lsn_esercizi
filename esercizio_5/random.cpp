@@ -39,11 +39,6 @@ void Random :: RanUniform3d(double R, double r[3]){
   r[2] += R * cos(phi);
 }
 
-void Random :: RanGaussian3d(double R, double r[3]){
-  r[0] += Gauss(r[0], R)
-  r[1] += Gauss(r[1], R)
-  r[2] += Gauss(r[2], R)
-}
 
 double Random :: RanTheta(){
   double x,y,r,theta;
