@@ -46,7 +46,7 @@ LSN exercise delivery.
 ### Exercise 8
 
 ### Exercise 9
-- [ ] Complete source code
+- [x] Complete source code
 - [ ] Produce results
 - [ ] Produce report
 - [ ] Check for accuracy

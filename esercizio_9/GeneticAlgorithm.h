@@ -9,16 +9,13 @@
 int seed[4];
 Random rnd;
 
-// optimization
-double timer, timer2, timer3, timer4;
-
 // Params
 int n_cities, n_replicas, n_generations;
-bool mode, report;
+bool mode, report, reload;
 
 // Data
 arma::mat cities;
-arma::field<arma::urowvec>population;
+arma::field<arma::urowvec> population;
 arma::field<arma::urowvec> oldpopulation;
 
 // Init
@@ -41,12 +38,12 @@ void Select();
 void Crossover(int, int, int, int, int);
 
 // Mutation
-double p_mut;
+double p_mut; // unit of mutation chance
 int mutations;
 void Mutate();
 void Swap(int, int, int);
 void Shift(int, int, int, int);
-void Permute(int, int, int);
+void Permute(int, int, int, int);
 void Invert(int, int, int);
 void SwapAB(int, int, int);
 
@@ -58,6 +55,7 @@ void Welcome();
 void Report(int);
 void Save(int);
 void Check(int, std::string);
+void PrintPopulation(int);
 
 // Other
 void CitiesOnCircumference();

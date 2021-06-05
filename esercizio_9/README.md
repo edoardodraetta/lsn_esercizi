@@ -1,11 +1,9 @@
 
 ### Exercise 9
-- [ ] implement some mutation operators
-
-
-#### later.....
-- [ ] Swap() --> swap_rows() :)
-
+1. Perform a random search with 10, 15, 32 cities on a circle
+2. Perform a genetic search with 10, 15, 32 cities on a circle
+3. Perform a random search with 10, 15, 32 cities on a square
+4. Perform a g search with 10, 15, 32 cities on a square
 
 #### Data structures
 
