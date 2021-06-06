@@ -31,7 +31,7 @@ LSN exercise delivery.
 - [x] Complete source code
 - [x] Produce results
 - [x] Produce report
-- [ ] Condense plots
+- [x] Condense plots
 - [ ] Check for accuracy
 
 ### Exercise 6

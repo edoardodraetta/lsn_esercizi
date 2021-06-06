@@ -1,4 +1,3 @@
-
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -6,7 +5,7 @@
 #include <vector>
 
 #include "metropolis.h"
-#include "random.h"
+#include "random.h" // RNG
 
 using namespace std;
 
@@ -15,7 +14,7 @@ int main() {
   for (int iblock = 1; iblock <= nblocks; ++iblock) {
     Reset(iblock);
     for (int istep = 1; istep <= nsteps; ++istep) {
-      Move();                                         // Try a move
+      Move();  // Try a move
 
       // Measure (for avg position)
       if (istep % imeasure == 0) Accumulate(iblock);  // measure
@@ -66,11 +65,11 @@ void Initialize() {
   ReadInput.close();
 
   // Starting positions
-  if (state == 0) { // ground state
+  if (state == 0) {  // ground state
     r0[0] = 1.2;
     r0[1] = 0;
     r0[2] = 0;
-  } else { // excited state
+  } else {  // excited state
     r0[0] = 0;
     r0[1] = 0;
     r0[2] = 5;
@@ -112,9 +111,9 @@ void Welcome() {
   cout << endl << endl;
 }
 
-void Reset(int iblock) { // Resets observables w/in each block
+void Reset(int iblock) {  // Resets observables w/in each block
 
-  if (iblock == 1){
+  if (iblock == 1) {
     glob_ave = 0.0;
     glob_av2 = 0.0;
   }
@@ -126,17 +125,16 @@ void Reset(int iblock) { // Resets observables w/in each block
   blk_norm = 0.0;
 }
 
-
 // ========== Algorithm ==========================================
 
-void Move() { // Metropolis Algorithm
+void Move() {  // Metropolis Algorithm
 
   // 1. Keep old position
   for (int j = 0; j < 3; j++) rold[j] = r[j];
 
   // 2. Generate a new position
-  if (mode == 0) rnd.RanUniform3d(dr, r);   // Uniform Transition Matrix
-  if (mode == 1) { // Gaussian Transition Matrix
+  if (mode == 0) rnd.RanUniform3d(dr, r);  // Uniform Transition Matrix
+  if (mode == 1) {                         // Gaussian Transition Matrix
     for (int j = 0; j < 3; j++) r[j] = rnd.Gauss(r[j], dr);
   }
 
@@ -144,10 +142,8 @@ void Move() { // Metropolis Algorithm
 
   attempted++;
 
-  if (state == 0)
-    alpha = GroundState(r) / GroundState(rold);
-  if (state == 1)
-    alpha = ExcitedState(r) / ExcitedState(rold);
+  if (state == 0) alpha = GroundState(r) / GroundState(rold);
+  if (state == 1) alpha = ExcitedState(r) / ExcitedState(rold);
 
   // 4. Accept or reject move
   if (rnd.Rannyu() > alpha) {
@@ -174,17 +170,20 @@ double ExcitedState(double r[3]) {  // phi 210
 
 // ========== Measurement ==========================================
 
-void Report(int iblock) {
-  cout << "Block " << iblock << ", "
-       << "Acceptance Rate: ";
-  cout << (double)accepted / attempted << endl;
-  cout << "Estimate : " << glob_ave/(double)iblock << endl << endl;
-  cout << "---------------------------------" << endl;
-}
-
 void Accumulate(int iblock) {  // collect positions for averaging
   ave_pos += DistanceFormula(r);
   blk_norm += 1.0;
+}
+
+double DistanceFormula(double r[3]) {
+  return sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
+}
+
+void PrintPos(double vec[3]) {
+  ofstream pos;
+  pos.open("positions.dat", ios::app);
+  pos << vec[0] << " " << vec[1] << " " << vec[2] << endl;
+  pos.close();
 }
 
 void Average(int iblock) {  // compute average and print to file
@@ -192,7 +191,7 @@ void Average(int iblock) {  // compute average and print to file
 
   // Compute ave and ave2 within block
   ave_pos /= (blk_norm);
-  av2_pos = (ave_pos*ave_pos);
+  av2_pos = (ave_pos * ave_pos);
 
   // Compute cumulative average
   glob_ave += ave_pos;
@@ -201,19 +200,7 @@ void Average(int iblock) {  // compute average and print to file
 
   // Print to file
   pos.open("./average_position.dat", ios::app);
-  pos << iblock << " " << glob_ave/(double)iblock << " " << err << endl;
-  pos.close();
-}
-
-double DistanceFormula(double r[3]) {
-
-  return sqrt(r[0]*r[0] + r[1]*r[1] + r[2]*r[2]);
-}
-
-void PrintPos(double vec[3]) {
-  ofstream pos;
-  pos.open("positions.dat", ios::app);
-  pos << vec[0] << " " << vec[1] << " " << vec[2] << endl;
+  pos << iblock << " " << glob_ave / (double)iblock << " " << err << endl;
   pos.close();
 }
 
@@ -226,3 +213,12 @@ double Error(double sum, double sum2, int iblk) {
         (double)(iblk - 1));
   }
 }
+
+void Report(int iblock) {
+  cout << "Block " << iblock << ", "
+       << "Acceptance Rate: ";
+  cout << (double)accepted / attempted << endl;
+  cout << "Estimate : " << glob_ave / (double)iblock << endl << endl;
+  cout << "---------------------------------" << endl;
+}
+
