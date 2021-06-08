@@ -47,6 +47,6 @@ LSN exercise delivery.
 
 ### Exercise 9
 - [x] Complete source code
-- [ ] Produce results
-- [ ] Produce report
-- [ ] Check for accuracy
+- [x] Produce results
+- [x] Produce report
+- [ ] Check for accuracy --> (it's possible my cost function is wrong, compare with circumference of circle)

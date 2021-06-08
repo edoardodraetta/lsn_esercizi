@@ -29,7 +29,8 @@ int main() {
 
 void Initialize() {
   ReadInput(); // read input.dat
-               // Seed random number generator
+
+  // Seed random number generator
   int p1, p2;
   ifstream Primes("Primes");
   Primes >> p1 >> p2;
@@ -239,7 +240,7 @@ void Mutate() {
   string msg;
   for (int irep = 1; irep < n_replicas; ++irep) {
     r = rnd.Rannyu();             // U[0,1)
-    if (r > 0 && r < 1 * p_mut) { // Swap two cities
+    if (r < 1 * p_mut) { // Swap two cities
       o = (int)rnd.Rannyu(0, n_cities - 1);
       u = (int)rnd.Rannyu(0, n_cities - 1);
       while (o == u) {
@@ -247,21 +248,21 @@ void Mutate() {
       }
       Swap(irep, o, u);
       ++mutations;
-    } else if (r > 1 * p_mut && r < 2 * p_mut) { // Invert contiguous cities
+    } else if (r < 2 * p_mut) { // Invert contiguous cities
       m = (int)rnd.Rannyu(3, n_cities - 1);
       o = (int)rnd.Rannyu(0, n_cities - 1 - m);
       Invert(irep, o, m);
       ++mutations;
-    } else if (r > 2 * p_mut && r < 3 * p_mut) { // Shuffle the path
+    } else if (r < 3 * p_mut) { // Shuffle the path
       population.at(irep) = shuffle(population.at(irep));
       ++mutations;
-    } else if (r > 3 * p_mut && r < 4 * p_mut) {    // Shift a set of cities up
+    } else if (r < 4 * p_mut) {    // Shift a set of cities up
       n = (int)rnd.Rannyu(1, n_cities - 3);         // number of cities to shift
       m = (int)rnd.Rannyu(1, n_cities - 3 - n);     // size of shift
       o = (int)rnd.Rannyu(0, n_cities - 3 - n - m); // starting index
       Shift(irep, o, m, n);
       ++mutations;
-    } else if (r > 4 * p_mut && r < 5 * p_mut) {      // Swap two sets of cities
+    } else if (r < 5 * p_mut) {      // Swap two sets of cities
       m = (int)rnd.Rannyu(2, (n_cities - 1) / 2 - 1); // size of set
       o = (int)rnd.Rannyu(0, (n_cities - 1) / 2 - m); // index of first set
       u = (int)rnd.Rannyu((n_cities - 1) / 2,
