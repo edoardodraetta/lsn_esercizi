@@ -6,10 +6,13 @@ LSN exercise delivery.
 
 Done. 
 
+Create executable with `make` and run `main.exe`.
+
 ### Exercise 2
-- [ ] Is my importance sampling correct? US better than IS??
-- [ ] Is my error too large? it seems proportional to the avg...
-- [ ] fit looks weird
+
+Done.
+
+Create executable with `make` and run `main.exe`.
 
 ### Exercise 3
 - [ ] review report
