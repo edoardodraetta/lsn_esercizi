@@ -15,7 +15,12 @@ Done.
 Create executable with `make` and run `main.exe`.
 
 ### Exercise 3
-- [ ] review report
+
+Done.
+
+Create executable with `make` and run `main.exe`.
+
+Quale risultato è più affidabile?
 
 ### Exercise 4
 
