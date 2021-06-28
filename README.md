@@ -2,15 +2,9 @@
 
 LSN exercise delivery.
 
-- [ ] comment on each notebook in italian, making sure to list the relevant experimental parameters
-- [ ] trim superfluous modules from programs
-- [ ] update c++ style in old programs
-
 ### Exercise 1
-- [ ] How many chi-squared tests should i run?
-- [ ] Can i use theoretical values for fitting a normal distribution?
-- [ ] Is my lorentz fit a true fit?
-- [ ] RanTheta .... r or r^2 ?
+
+Done. 
 
 ### Exercise 2
 - [ ] Is my importance sampling correct? US better than IS??
@@ -50,3 +44,12 @@ LSN exercise delivery.
 - [x] Produce results
 - [x] Produce report
 - [ ] Check for accuracy --> (it's possible my cost function is wrong, compare with circumference of circle)
+
+### Exercise 10
+- [ ] text
+
+### Exercise 11
+- [ ] text
+
+### Exercise 12
+- [ ] text
