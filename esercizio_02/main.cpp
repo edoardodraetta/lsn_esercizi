@@ -47,13 +47,6 @@ int main (int argc, char *argv[]){
       input.close();
    } else cerr << "PROBLEM: Unable to open seed.in" << endl;
 
-   cout << "Primes: " << p1 << " " << p2 << endl;
-   cout << "Seed: ";
-   for (int i=0; i<4; i++){
-      cout << seed[i] << " ";
-   }
-   cout << endl;
-
 /*===========================================================================*/
 
    // 2.1.1 1D Integral via Monte Carlo
@@ -78,7 +71,7 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   string datafile = "./data/basic_sampling.dat";
+   string datafile = "basic_sampling.dat";
    blocked_stats(ave, av2, N, datafile);
 
    // 2.1.2 Importance Sampling with 1-x distribution
@@ -105,7 +98,7 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   datafile = "./data/importance_sampling.dat";
+   datafile = "importance_sampling.dat";
    blocked_stats(ave, av2, N, datafile);
 
    // 2.1.3? Unimportance Sampling with x distribution
@@ -132,14 +125,12 @@ int main (int argc, char *argv[]){
 
    // Cumulative blocked statistics
 
-   datafile = "./data/unimportance_sampling.dat";
+   datafile = "unimportance_sampling.dat";
    blocked_stats(ave, av2, N, datafile);
 
 /*===========================================================================*/
 
    // 2.2.1 3D Random Walk on a Cubic Lattice
-
-   // rnd.SetRandom(seed,p1,p2);
 
    int n_walks = 10000; // number of random walks per experiment
    int n_steps = 100;   // max number of steps
@@ -157,9 +148,11 @@ int main (int argc, char *argv[]){
          lattice[1] = 0;
          lattice[2] = 0;
 
+         // walk
          Discrete_Random_Walk(lattice, rnd, i+1);
 
-         ave[i] += Distance_Formula_Lattice(lattice); // calculate distance from origin
+         // calculate distance from origin
+         ave[i] += Distance_Formula_Lattice(lattice);
       }
 
       ave[i] /= n_walks;
@@ -168,7 +161,7 @@ int main (int argc, char *argv[]){
 
    // Statistics
 
-   datafile = "./data/rw_lattice.dat";
+   datafile = "rw_lattice.dat";
    blocked_stats(ave, av2, n_steps, datafile);
 
    // 2.2.2
@@ -199,7 +192,7 @@ int main (int argc, char *argv[]){
       av2[i] = ave[i] * ave[i];
    }
 
-   datafile = "./data/rw_continuum.dat";
+   datafile = "rw_continuum.dat";
    blocked_stats(ave, av2, n_steps, datafile);
 
    rnd.SaveSeed();
