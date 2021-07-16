@@ -8,15 +8,19 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 *****************************************************************
 *****************************************************************/
 //parameters, observables
-const int m_props=4;
 int n_props;
-int iv,ik,it,ie;
-double stima_pot, stima_kin, stima_etot, stima_temp;
-double avg_pot, avg_kin, avg_etot, avg_temp;
-double err_pot, err_kin, err_etot, err_temp;
+int iv,ik,it,ie,iw,igofr;
+double bin_size, nbins;
+double stima_pot, stima_kin, stima_etot;
+double stima_temp, stima_press, stima_gdir;
+double err_pot, err_kin, err_etot;
+double err_temp, err_press, err_gdir;
+double current_temp;
 
 // averages
+const int m_props=1000;
 double acc,att;
+double walker[m_props];
 double blk_av[m_props], blk_norm;
 double glob_av[m_props],glob_av2[m_props];
 
@@ -33,9 +37,11 @@ double energy,temp,vol,rho,box,rcut;
 int nstep, iprint, seed, nblocks;
 double delta;
 bool restart, rescale;
+double rescaletemp;
 
 // functions
 void Input(void);
+void Welcome();
 void Move(void);
 void Measure(void);
 double Force(int, int);

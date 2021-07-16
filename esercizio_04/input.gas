@@ -5,9 +5,10 @@
 0.0005
 1000
 100
-1000
+10
 1
-1
+0
+0
 
   ReadInput >> temp;
   ReadInput >> npart;
@@ -19,5 +20,7 @@
   ReadInput >> iprint;
   ReadInput >> restart;
   ReadInput >> rescale;
+  ReadInput >> rescaletemp;
 
 Input file for Argon gas phase
+
