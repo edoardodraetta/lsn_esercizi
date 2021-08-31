@@ -218,11 +218,15 @@ int main(int argc, char *argv[]) {
     hits = 0;
     for (int j = 0; j < T; j++) {
 
-      t = rnd.RanTheta();        // needle rotation
+      t = rnd.RanTheta();        // needle rotation (0, 2Pi)
       y1 = d * rnd.Rannyu();     // place one end of the needle
       y2 = y1 + length * sin(t); // calculate the other end
 
-      if ((y1 < 0 || y1 > 10) || (y2 < 0 || y2 > 10)) { // check for hits
+      // if ((y1 < 0 || y1 > 10) || (y2 < 0 || y2 > 10)) { // check for hits
+      //   hits += 1;
+      // }
+
+      if (y2 < 0 || y2 > 10) { // check for hits
         hits += 1;
       }
     }

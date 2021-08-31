@@ -26,7 +26,7 @@ int main() {
     for (int istep = 1; istep <= nstep; ++istep) {
       Move(); // Move particles with Verlet algorithm
       if (istep % iprint == 0) { // Write actual configuration in XYZ format:
-        ConfXYZ(nconf); // Commented to avoid "filesystem full"!
+        // ConfXYZ(nconf); // Commented to avoid "filesystem full"!
         nconf += 1;
       }
 

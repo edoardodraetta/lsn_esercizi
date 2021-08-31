@@ -116,8 +116,6 @@ int main (int argc, char *argv[]){
 
   // 3.1.2 - Path Sampling of GBM
 
-  // rnd.SetRandom(seed,p1,p2);
-
   M = 100000;
   int timesteps = 100;
   float t = T / timesteps;

@@ -12,7 +12,6 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 #include <fstream>
 #include <string>
 #include <vector>
-
 #include "random.h"
 #include "statistics.h"
 #include "RandomWalk.h"

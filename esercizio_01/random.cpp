@@ -78,7 +78,7 @@ double Random :: sum_lorentzian(int M, double mean, double gamma){
 
 double Random :: Lorentzian(double mean, double gamma) {
   double r;
-  r = gamma * tan(M_PI * (Rannyu() - 0.5) ) + mean;
+  r = gamma * tan(M_PI * (Rannyu() - 0.5) ) - mean;
   return r;
 }
 

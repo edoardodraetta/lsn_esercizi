@@ -1,75 +1,53 @@
 # lsn_esercizi
 
-LSN exercise delivery.
+LSN exercise delivery by Edoardo Draetta.
 
-#### Not done
-- [ ] Exercise 4
-- [ ] Exercise 6
-- [ ] Exercise 7
-- [ ] Exercise 8
-- [ ] Exercise 10
-- [ ] Exercise 12
+### Exercise 1 - Introduction
 
-### Exercise 1 -- Introduction
+Use the `makefile` to create `main.exe`, which executes all simulations.
 
-Done. 
+### Exercise 2 - Importance Sampling and Random Walks
 
-Create executable with `make` and run `main.exe`.
+Same as above.
 
-### Exercise 2 -- Monte Carlo Integration
+### Exercise 3 - Options Pricing with GBM
 
-Done.
+Same as above.
 
-Create executable with `make` and run `main.exe`.
+### Exercise 4 - NVE Molecular Dynamics of Argon.
 
-### Exercise 3 -- Options Pricing
+Use the `makefile` to create `MolDyn_NVE.exe`, which executes the simulation.
 
-Done.
+Inside the `data` directory I've left the parameters and starting configurations for each phase.
 
-Create executable with `make` and run `main.exe`.
+### Exercise 5 - Sampling QM Wavefunctions with Metropolis
 
-Quale dei risultati è il più affidabile?
+Use the `makefile` to create `Metro.exe`, which executes the simulation.
 
-### Exercise 4  -- Molecular Dynamics NVE
+### Exercise 6 - The 1D Ising Model with Metropolis and Gibbs
 
-Done. 
+Use the `makefile` to create `Monte_Carlo_Ising_1D.exe`, which executes the simulation.
 
-Create executable with `make` and run `MolDyn_NVE.exe`.
+### Exercise 7 - Monte Carlo NVT
 
-### Exercise 5 -- Sampling Wavefunctions with the Metropolis Algorithm
+Use the `makefile` to create `Monte_Carlo_NVT.exe`, which executes the simulation.
 
-Done.
+### Exercise 8 - Variational Monte Carlo and PIGS
 
-Create executable with `make` and run `Metro.exe`.
+Use the `makefile` to create `Variational_MC.exe`, which executes the simulation.
 
-### Exercise 6 -- The Ising Spin Model
+### Exercise 9 - Traveling Salesman Problem with Genetic Algorithm
 
-Not done. 
+Use the `makefile` to create `TSP.exe`, which executes the simulation.
 
-### Exercise 7 -- Monte Carlo NVT
+### Exercise 10 - TSP with Simulated Annealing and Parallel Genetic Algorithm
 
-Not done.
+Use the `makefile` to create `TSP.exe` within each subfolder (parallel, genetic, annealing), which executes the simulation.
 
-### Exercise 8 -- Variational Monte Carlo and PIGS
+### Exercise 11 - Introduction to Keras
 
-Not done at all.
+Notebook.
 
-### Exercise 9 -- The Traveling Salesman Problem
+### Exercise 12 - Digit Recognition with Keras
 
-Done.
-
-Create executable with `make` and run `TSP.exe`.
-
-
-### Exercise 10 -- Simulated Annealing and Parallel Search
-
-Not done.
-
-### Exercise 11 -- Neural Network Regression
-
-Done.
-
-### Exercise 12 -- Deep & Convolutional Neural Network image recognition
-
-Not done.
-
+Notebook.
