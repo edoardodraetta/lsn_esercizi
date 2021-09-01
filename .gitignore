@@ -12,8 +12,8 @@
 .idea
 
 # Scripts
-*.py
-*.sh
+# *.py
+# *.sh
 
 # Data
 # *.dat
@@ -53,5 +53,5 @@
 
 # Executables
 *.exe
-*.out
+# *.out
 *.app
