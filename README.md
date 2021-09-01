@@ -1,6 +1,6 @@
 # lsn_esercizi
 
-LSN exercise delivery by Edoardo Draetta.
+LSN exercise delivery by Edoardo Draetta. All data necessary for the notebooks is safely stowed away in the `data` directories. 
 
 ### Exercise 1 - Introduction
 
