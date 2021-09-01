@@ -1,0 +1,15 @@
+32
+10000
+100
+.05
+1
+1
+0
+
+  input >> n_cities;
+  input >> n_replicas;
+  input >> n_generations;
+  input >> p_mut;
+  input >> mode;
+  input >> report;
+  input >> reload;

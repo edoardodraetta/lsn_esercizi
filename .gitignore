@@ -16,7 +16,7 @@
 *.sh
 
 # Data
-*.dat
+# *.dat
 *.png
 *.xyz
 
